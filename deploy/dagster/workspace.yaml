@@ -1,0 +1,8 @@
+# The webservers + daemon load OUR Definitions from the dagster-code gRPC server (NOT from a
+# local python file) — so a code reload = recreate dagster-code only; webserver/daemon
+# auto-reconnect. Baked into the image at /app/deploy/dagster/workspace.yaml.
+load_from:
+  - grpc_server:
+      host: dagster-code
+      port: 4000
+      location_name: nostrology

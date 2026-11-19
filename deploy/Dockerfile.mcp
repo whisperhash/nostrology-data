@@ -1,0 +1,50 @@
+# nostrology-mcp (arm64) - the MCP server container: streamable HTTP on :8080
+# behind Caddy (nostrology-web's compose) at https://nostrolo.gy/mcp.
+# Long-running service (restart: unless-stopped). Build context = the repo root (see compose).
+# base-pin: python:3.12-slim-bookworm resolved 2026-10-26
+# Pinned by OCI index digest, so the box's pull is content-addressed (the Docker daemon
+# verifies the registry against its own CA store) and a rebuild is reproducible. The tag
+# beside the digest is decorative - Docker resolves the digest and ignores it - so a tag bump
+# needs a re-resolve and a new base-pin line in the same commit. Measured on this digest 2026-10-26:
+# ca-certificates 20250419~deb12u2, the DSA-6572-1 fix; 148 roots; none of the roots
+# compromised in the 2026-10 eMudhra/emSign incident; the ISRG Root X1 canary present.
+FROM python:3.12-slim-bookworm@sha256:6a0e06f5ba0b373d051aabd3fffb9b873f27f9a2a3a14bcbe37dee6f0e3bbc70
+
+# The CA trust store, installed rather than inherited. Its sibling image on this base
+# (deploy/dagster/Dockerfile.dagster) does this too; until 2026-10-26 this one did not, and was
+# clean only because the base image happens to ship the package. Two images on one base behaving
+# differently for no stated reason is a snowflake, and installing it means the bundle is
+# regenerated here by update-ca-certificates rather than inherited from whenever the base was
+# last built. This image's TLS is what the MCP server uses to reach Aurora.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+
+# Dependencies: exactly the hash-locked nostrology_mcp/requirements.txt, generated from
+# requirements.in by scripts/python-lock.sh.
+# --require-hashes refuses any package the lock does not list with its version and
+# hash, --only-binary refuses source builds, and pip check fails the build on an
+# inconsistent set. No -q: the "Successfully installed" line in the build log is the
+# record of what shipped. The workstation test venv (.venv-mcp) installs the same lock.
+COPY nostrology_mcp/requirements.txt /tmp/mcp-requirements.txt
+RUN pip install --no-cache-dir --require-hashes --only-binary :all: -r /tmp/mcp-requirements.txt \
+    && pip check
+
+WORKDIR /app
+# Only the package modules - NOT tests/, logs/, README (the image has no pytest,
+# and logs/ is runtime state that must live on the bind mount, never in a layer).
+COPY nostrology_mcp/*.py nostrology_mcp/
+# The loader's mint-URL normalizer (stdlib-only), so the nutzaps mint_url filter folds
+# a caller's URL with the SAME rule the stored column was written with. loader/ has no
+# __init__.py: it imports as a namespace package from WORKDIR.
+COPY loader/nutzap_mints.py loader/
+
+# The image has no git binary or .git dir, so the serving SHA is baked at build
+# time (compose passes the repo HEAD); server._git_sha() reads it before trying
+# git. Without this every preamble + call-log record would say "unknown".
+ARG GIT_SHA=unknown
+ENV NOSTROLOGY_MCP_GIT_SHA=${GIT_SHA}
+
+# Transport/bind/DSN details come from the compose environment, not the image.
+EXPOSE 8080
+CMD ["python", "-m", "nostrology_mcp.server"]

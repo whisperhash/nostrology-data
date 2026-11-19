@@ -1,0 +1,130 @@
+# NIP-57 LNURL service signer pubkey -> canonical lud16 domain.
+# Source-of-truth for /lightning trends charts (at-the-time provider
+# attribution for kind-9735 zap-receipts via JOIN on lnurl_signer_pubkey).
+#
+# Loaded by loader/load_jsonl_exports_into_postgres.py --load-lightning-signers <this-file>, and
+# read by /git's zap admission (dagster_code/pipeline/ngit.py).
+#
+# Editing notes:
+# - Each signer pubkey MUST be unique across the file (one signer can only map to one provider).
+# - Multiple signers per provider are supported (some wallets rotate keys or run multiple LNURL gateways).
+# - Verify a new signer against the provider's live LNURL-pay endpoint (NIP-57 `nostrPubkey`)
+#   before adding it; docs/design/ngit-design.md section 14 has the recipe.
+
+providers:
+- domain: primal.net
+  signers:
+  - f81611363554b64306467234d7396ec88455707633f54738f6c4683535098cd3
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: walletofsatoshi.com
+  signers:
+  - be1d89794bf92de5dd64c1e60f6a2c70c140abac9932418fee30c5c637fe9479
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: getalby.com
+  signers:
+  - 79f00d3f5a19ec806189fcab03c1be4ff81d18ee4f653c88fac41fe03570f432
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: coinos.io
+  signers:
+  - 72bdbc57bdd6dfc4e62685051de8041d148c3c68fe42bf301f71aa6cf53e52fb
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: npub.cash
+  signers:
+  - 8576fd19bfe693cba6f0aee33b8427334306846ec61b65e2d617209e1c021046
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: strike.me
+  signers:
+  - 8b7cd4981e30ed2dd6b5ef1f816763453b282b3e44f41ef2a3da77ff5ef8d141
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: minibits.cash
+  signers:
+  - beeb48407a6f087ea8f76dc384a5d88c67ced9bd9fb0cdba90930210df3d92e7
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: rizful.com
+  signers:
+  - cb39c483077b7b71f37ecb209419f7d8439c0f1125724b9c88749dcb001a6a2c
+  - dbf98ea2d9ad7afe17976a7fc460d059ef973d654ccb95760bc044fd3851f03f
+  - 5a6c16cf3a70a7e9520daba5ff8d61596a2cc42e66ab94c2866e50f027d3140b
+  - d04187c8e598abe842f32d5dc3ede5f4fc8e7544c4eb1da8949e7be5f5d9718c
+  - 35ea455966a615b2ceacac5ad3d161514f8d61306cc295a62e31044502887e43
+  - 1b12008ff207b70d23e9d57cab041d16a19dee966498bd301d16d3b17bdfcaa2
+  - fd83ff95c117acd528dfb728df561ec60e7df2071dbc0f39c4ea332fa8a9c690
+  - 764ed2c5592484de3e660fc94225df6b0e88fd0bbc033aaa629fda7ba32b4746
+  - ad13520c4694880723a8972e0ea08f700706a5ac128189168eec142aae1759f1
+  - fd17a2f939dbb5a5a8cabb85cc71fa0910cc0b8865b1048b84f1b3260bbb0d13
+  - 4f1edcb6446f02bc20d3369614e3f66b9a7cc5c61d4dd882ec3eebb84f4b8afe
+  - c8625840161954eecf1cdc0a196b8cf005365d1cffea2965c6539192f06ec652
+  - 30b49883cad0dd7000f65938e1ca65cef5c4280d55963d020215951f8bc5dd71
+  - 4e9c0983e375ce2d296e61d654131f1832ff47742595d342cc34151e0623a09d
+  - 234e22024637d562ec71a02fddaa7e267b3e97e65f754376b840ef2640e9fa1d
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: blink.sv
+  signers:
+  - 8fe53b37518e3dbe9bab26d912292001d8b882de9456b7b08b615f912dc8bf4a
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: zeuspay.com
+  signers:
+  - abd32a8bc530142cc04a23f9c07239dbbc6664f4f7eeceb8092c0e3530f94e9d
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: wallet.yakihonne.com
+  signers:
+  - 00e43ba66facdb5bd6abe821b049af419f7762090a6c575fa3ef3513da5850ee
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: fountain.fm
+  signers:
+  - 6538925ebfb661f418d8c7d074bee2e8afd778701dd89070c2da936d571e55c3
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: blitzwalletapp.com
+  signers:
+  - c6e230a25ead3c497013637bf377bced81c7cdb60d881a63edb138b08aa68083
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: sendsats.lol
+  signers:
+  - 9630f464cca6a5147aa8a35f0bcdd3ce485324e732fd39e09233b1d848238f31
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: satsilo.com
+  signers:
+  - 9e546bc901d937da8c353feab3a972529fdd27fd41a0d46a5744714673390a45
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: nostrdvm.com
+  signers:
+  - 1bdae359524c358681334307d757bb434a223fa11a2635c2f909351b29054220
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57
+- domain: zap.stream
+  signers:
+  - cf45a6ba1363ad7ed213a078e710d24115ae721c9b47bd1ebf4458eaefb4c2a5
+  verified_at: '2026-05-09'
+  verified_via: nip57.nostrPubkey
+  notes: Verified against live LNURL-pay endpoint per NIP-57

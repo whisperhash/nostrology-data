@@ -1,0 +1,20 @@
+# Out-of-band Dagster daemon liveness heartbeat (oneshot; driven by dagster-heartbeat.timer).
+# A deployment installs this pair as root, with its own user and paths in place of the ones below
+# (docs/design/dagster-orchestration-design.md, "What a deployment provides"):
+#   sudo cp deploy/dagster/heartbeat/dagster-heartbeat.{service,timer} /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now dagster-heartbeat.timer
+# The user needs the docker group. systemd reads the optional webhook file itself, before it
+# switches to that user, so the user needs no access to it.
+[Unit]
+Description=Dagster daemon liveness heartbeat (nostrology dev)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=ec2-user
+# The Discord webhook is optional: DAGSTER_DISCORD_WEBHOOK from this file if it exists, which
+# only root need read. A deployment that keeps it elsewhere points a drop-in at that file.
+Environment=DAGSTER_DISCORD_WEBHOOK=
+EnvironmentFile=-/etc/nostrology-dagster/heartbeat.env
+ExecStart=/home/ec2-user/nostrology-data/deploy/dagster/heartbeat/dagster-heartbeat.sh

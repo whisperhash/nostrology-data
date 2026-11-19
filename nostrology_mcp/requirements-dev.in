@@ -1,0 +1,21 @@
+# Test tools for the workstation venv (.venv-mcp), installed together with requirements.txt (the
+# image lock); never installed in the image. requirements-dev.txt is GENERATED from this
+# file by `scripts/python-lock.sh compile mcp-dev`, constrained to the image lock, so a
+# package both locks list has the same version in both.
+-c requirements.txt
+
+pytest==9.1.1
+coverage==7.15.2
+
+# Used to assert that what we ADVERTISE actually admits what a caller sends - the property
+# behind the contextvm.org form fix. It arrives transitively with `mcp` today; declared here
+# so the check cannot vanish on a dependency change (the test importorskips it, so a slim
+# env still runs the rest). Same version as the image lock.
+jsonschema==4.26.0
+
+# pytest's own dependencies, at the versions the Python 3.11 venv ran when the locks were
+# introduced (2026-09-14), so moving the venv to the lock changed no test tool version.
+pluggy==1.6.0
+iniconfig==2.3.0
+packaging==26.2
+pygments==2.20.0

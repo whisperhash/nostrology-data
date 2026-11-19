@@ -1,0 +1,12 @@
+# Fire the daemon liveness heartbeat every 5 minutes (and ~1 min after boot). See the .service.
+[Unit]
+Description=Run the Dagster daemon liveness heartbeat every 5 minutes
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=5min
+AccuracySec=30s
+Unit=dagster-heartbeat.service
+
+[Install]
+WantedBy=timers.target

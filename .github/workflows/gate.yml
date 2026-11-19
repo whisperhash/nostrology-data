@@ -1,0 +1,308 @@
+# The test gate: everything a deploy that changes what runs must pass first, in the deployment
+# that serves https://nostrolo.gy, the public site and its MCP endpoint. It runs only when
+# dispatched, and holds no secret. The deployment dispatches it on main before such a deploy,
+# deploys only once it ends green, and then only the commit it tested. The deployment also posts its
+# result, which this job cannot do (below). Dispatched by hand, it deploys nothing:
+#   gh workflow run gate.yml -R whisperhash/nostrology-data
+#
+# A test rotted for seven days and three deploys went out over it, because nothing ran the suites
+# unless someone remembered. There is deliberately no skip input.
+#
+# Which deploys wait for it is the deployment's to say: every one that builds or ships code does.
+# A re-run of a job in the image already deployed does not: a failed run's alert sends the operator
+# to it during an incident, so a red test must not block it. Nor does a repair that re-applies the
+# role SQL, which no test reads, so this job applies that SQL itself.
+#
+# It has no push or pull_request trigger: a deploy dispatches it on main and waits for that run, so
+# any other run would be one nothing reads. dagster_code/tests/test_gate_workflow.py holds that.
+#
+# The job holds no secret, deliberately: a package that runs here with sudo can read any secret the
+# job references, from the runner's memory. So it cannot post to Discord. Its summary step prints
+# what it found, and the deployment reads that from the log and posts it, green or red.
+# dagster_code/tests/test_gate_workflow.py holds this file's shape.
+name: Test gate
+run-name: Test gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "The verb of the deploy waiting on this run, if any. Accepted and not shown: every run is titled the same"
+        type: string
+        required: false
+        default: ""
+
+# Nothing by default: the job says what it holds, which is a read of the code and nothing else.
+permissions: {}
+
+jobs:
+  test:
+    permissions:
+      contents: read
+    # Ubuntu 24.04 has what the job needs: Docker for the scratch Postgres, and CPython 3.12 on
+    # x86_64, whose wheels the locks hold.
+    runs-on: ubuntu-24.04
+    # About 3.4 min with both environments kept and 5.5 min with nothing kept. This and the steps'
+    # own limits are as tight as a slow network allows, so a hung step fails the job.
+    timeout-minutes: 12
+    env:
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    steps:
+      # By commit, as the deploy's own action is. persist-credentials: leaves no token in
+      # .git/config for the tests to read.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        id: checkout
+        timeout-minutes: 3
+        with:
+          persist-credentials: false
+
+      # Without Docker this job cannot run. Say so, rather than fail later in a way that reads like a
+      # broken test.
+      - name: Docker is here
+        id: docker
+        run: |
+          echo "GATE_STARTED=$(date +%s)" >> "$GITHUB_ENV"
+          if ! command -v docker > /dev/null; then
+            echo "::error::no Docker here, so the scratch Postgres cannot start. Not a test failure."
+            exit 1
+          fi
+
+      # The two Python environments are kept between runs in GitHub's Actions cache, each under a
+      # key that holds everything that shapes it, this file's install recipe included. A key is
+      # restored exactly or not at all: an environment built from other locks is never handed over.
+      - name: Environment keys
+        id: keys
+        run: |
+          set -euo pipefail
+          dagster=$( { python3 -V; cat .github/workflows/gate.yml dagster_code/requirements.txt \
+                       dagster_code/requirements-test.txt requirements-pipeline.txt deploy/dagster/wheels/*.whl; } \
+                     | sha256sum | cut -c1-16)
+          mcp=$( { python3 -V; cat .github/workflows/gate.yml nostrology_mcp/requirements.txt \
+                   nostrology_mcp/requirements-dev.txt; } | sha256sum | cut -c1-16)
+          echo "dagster=$dagster" >> "$GITHUB_OUTPUT"
+          echo "mcp=$mcp" >> "$GITHUB_OUTPUT"
+
+      # A cache that cannot be read or written costs a build, never a red gate: each environment step
+      # builds what was not restored, and each save comes before any test, so a red test does not
+      # throw away an environment that was built whole.
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        id: dagster-restore
+        timeout-minutes: 3
+        continue-on-error: true
+        with:
+          path: ~/gate-py/dagster
+          key: gate-dagster-${{ steps.keys.outputs.dagster }}
+
+      # Installed as the image is: hashes required, wheels only, the rebuilt reverse_geocoder wheel
+      # from the repository, pip check.
+      - name: Dagster environment
+        id: dagster-environment
+        timeout-minutes: 8
+        run: |
+          set -euo pipefail
+          venv="$HOME/gate-py/dagster"
+          # A kept environment that went bad rebuilds, rather than turn the gate red.
+          if [ -f "$venv/.complete" ] && "$venv/bin/python" -c 'import dagster, duckdb, pytest, yaml'; then
+            echo "kept $venv"
+          else
+            echo "building $venv"
+            rm -rf "$venv"
+            python3 -m venv "$venv"
+            "$venv/bin/pip" install --quiet --require-hashes --only-binary :all: \
+              --find-links deploy/dagster/wheels -r dagster_code/requirements.txt
+            "$venv/bin/pip" install --quiet --require-hashes --only-binary :all: \
+              -r dagster_code/requirements-test.txt
+            # Six tests run the real SQL templates on DuckDB, which the image's lock does not
+            # have and the pipeline lock does. pip accepts an empty file, so an empty stanza has
+            # to fail here or the environment is stamped whole without DuckDB.
+            awk '/^duckdb==/{p=1} p{print} p&&!/\\$/{exit}' requirements-pipeline.txt > "$RUNNER_TEMP/duckdb.txt"
+            grep -q '^duckdb==' "$RUNNER_TEMP/duckdb.txt" \
+              || { echo "::error::no duckdb stanza in requirements-pipeline.txt"; exit 1; }
+            "$venv/bin/pip" install --quiet --require-hashes --only-binary :all: --no-deps -r "$RUNNER_TEMP/duckdb.txt"
+            "$venv/bin/pip" check
+            # Each of these turns tests into skips when it is absent, not into failures.
+            "$venv/bin/python" -c 'import dagster, duckdb, pytest, yaml'
+            touch "$venv/.complete"
+          fi
+          echo "DAGSTER_PY=$venv/bin/python" >> "$GITHUB_ENV"
+          du -sh "$venv" | cut -f1
+
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        id: dagster-save
+        if: ${{ steps.dagster-restore.outputs.cache-hit != 'true' }}
+        timeout-minutes: 3
+        continue-on-error: true
+        with:
+          path: ~/gate-py/dagster
+          key: gate-dagster-${{ steps.keys.outputs.dagster }}
+
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        id: mcp-restore
+        timeout-minutes: 3
+        continue-on-error: true
+        with:
+          path: ~/gate-py/mcp
+          key: gate-mcp-${{ steps.keys.outputs.mcp }}
+
+      - name: MCP environment
+        id: mcp-environment
+        timeout-minutes: 4
+        run: |
+          set -euo pipefail
+          venv="$HOME/gate-py/mcp"
+          if [ -f "$venv/.complete" ] && "$venv/bin/python" -c 'import jsonschema, mcp, pytest'; then
+            echo "kept $venv"
+          else
+            echo "building $venv"
+            rm -rf "$venv"
+            python3 -m venv "$venv"
+            "$venv/bin/pip" install --quiet --require-hashes --only-binary :all: -r nostrology_mcp/requirements.txt
+            "$venv/bin/pip" install --quiet --require-hashes --only-binary :all: -r nostrology_mcp/requirements-dev.txt
+            "$venv/bin/pip" check
+            "$venv/bin/python" -c 'import jsonschema, mcp, pytest'
+            touch "$venv/.complete"
+          fi
+          echo "MCP_PY=$venv/bin/python" >> "$GITHUB_ENV"
+          du -sh "$venv" | cut -f1
+
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        id: mcp-save
+        if: ${{ steps.mcp-restore.outputs.cache-hit != 'true' }}
+        timeout-minutes: 3
+        continue-on-error: true
+        with:
+          path: ~/gate-py/mcp
+          key: gate-mcp-${{ steps.keys.outputs.mcp }}
+
+      # The MCP server's deploy ships cashu-redeemer, which holds the money. With node on PATH the
+      # two payload tests in nostrology_mcp/tests run as well, which the ceiling below counts on.
+      # npm's cache is kept between runs under a key of the redeemer's package-lock.json.
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        id: setup-node
+        timeout-minutes: 3
+        with:
+          node-version: 22    # cashu_redeemer/Dockerfile's major
+          cache: npm
+          cache-dependency-path: cashu_redeemer/package-lock.json
+
+      - name: cashu_redeemer dependencies
+        id: cashu-redeemer-dependencies
+        timeout-minutes: 3
+        working-directory: cashu_redeemer
+        run: npm ci --ignore-scripts --prefer-offline --no-audit --no-fund
+
+      - name: cashu_redeemer
+        id: cashu-redeemer
+        if: ${{ !cancelled() }}
+        timeout-minutes: 5
+        working-directory: cashu_redeemer
+        run: npm test
+
+      # One server, a database per suite: their contract tests truncate their tables. Its data sits
+      # in memory: a scratch database has no business writing to the host's disk, and an anonymous
+      # volume would outlive the job. So can the record of a container whose job was killed, which
+      # is what the first line removes.
+      #
+      # It sorts text as production does. Aurora's default collation is glibc's en_US.UTF-8, which
+      # ignores case, accents and punctuation at the first level, and the image's own default compares
+      # bytes, so a plain ORDER BY that passed here could sort differently there. ICU's
+      # en-US-u-ka-shifted sorts as glibc does at that level; plain en-US matches it on case and
+      # accents only, and sorts URLs, dotted d-tags and model ids as bytes do. The last lines ask both
+      # suites' databases: both comparisons are true in production and false on bytes and on en-US.
+      - name: Scratch Postgres
+        id: scratch-postgres
+        if: ${{ !cancelled() }}
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          docker rm -fv gate-pg > /dev/null 2>&1 || true
+          docker run -d --name gate-pg --tmpfs /var/lib/postgresql/data \
+            -e POSTGRES_PASSWORD=contract -e POSTGRES_DB=loader -p 127.0.0.1:15433:5432 \
+            -e POSTGRES_INITDB_ARGS='--locale-provider=icu --icu-locale=en-US-u-ka-shifted' \
+            postgres:16-alpine@sha256:0cefaabd882e42bcb2a2f3dc56d3ce4770560ba62fd7f197f1a2e008fd5731ab > /dev/null
+          ok=0
+          for i in $(seq 1 120); do
+            # -h 127.0.0.1: the image's init phase answers on the socket only, then restarts.
+            if docker exec gate-pg pg_isready -U postgres -d loader -h 127.0.0.1 -q; then ok=1; break; fi
+            sleep 1
+          done
+          if [ "$ok" != 1 ]; then docker logs gate-pg | tail -20; exit 1; fi
+          docker exec gate-pg psql -U postgres -qc 'CREATE DATABASE mcp'
+          for db in loader mcp; do
+            sorts=$(docker exec gate-pg psql -U postgres -d "$db" -Atc "SELECT 'a' < 'B' AND 'https://minta.io' < 'https://mint.coinos.io'")
+            if [ "$sorts" != t ]; then
+              echo "::error::the scratch database $db does not sort text as production does"
+              exit 1
+            fi
+          done
+          echo "ready after about ${i} s"
+
+      # Each suite runs whatever the one before did, so one run shows every failure. -rs and the
+      # report are for the ceiling below: a suite that loses a dependency skips, and exits 0.
+      - name: dagster_code/tests
+        id: dagster-tests
+        if: ${{ !cancelled() }}
+        timeout-minutes: 5
+        run: $DAGSTER_PY -m pytest dagster_code/tests -q -p no:cacheprovider --tb=short -rfEs --durations=5 --junitxml="$RUNNER_TEMP/dagster.xml"
+
+      - name: loader
+        id: loader-tests
+        if: ${{ !cancelled() }}
+        timeout-minutes: 5
+        env:
+          NOSTROLOGY_CONTRACT_DSN: postgresql://postgres:contract@127.0.0.1:15433/loader
+        run: $DAGSTER_PY -m pytest loader -q -p no:cacheprovider --tb=short -rfEs --durations=5 --junitxml="$RUNNER_TEMP/loader.xml"
+
+      - name: nostrology_mcp/tests
+        id: mcp-tests
+        if: ${{ !cancelled() }}
+        timeout-minutes: 5
+        env:
+          NOSTROLOGY_CONTRACT_DSN: postgresql://postgres:contract@127.0.0.1:15433/mcp
+        run: $MCP_PY -m pytest nostrology_mcp/tests -q -p no:cacheprovider --tb=short -rfEs --durations=5 --junitxml="$RUNNER_TEMP/mcp.xml"
+
+      # What the deployment runs from this tree and no test reads: the lock guard, and the SQL. The
+      # SQL goes to a database of its own, as the owner role, which on Aurora is not a superuser
+      # either, in the order a fresh database meets it and twice over, because a deploy and a
+      # repair re-apply these files on a live database. Last, because its roles live on the server
+      # and the suites share that server.
+      - name: Deploy tooling and role SQL
+        id: deploy-tooling
+        if: ${{ !cancelled() }}
+        timeout-minutes: 3
+        run: |
+          set -euo pipefail
+          python3 scripts/check_python_locks.py .
+          # The guard's own mutations, which rotted for nine days once with nothing running them.
+          python3 scripts/check_python_locks_variants.py
+          docker exec gate-pg psql -U postgres -q -v ON_ERROR_STOP=1 \
+            -c 'CREATE ROLE nostrology LOGIN CREATEROLE' -c 'CREATE DATABASE nostrology OWNER nostrology'
+          for f in init init roles roles; do
+            docker exec -i gate-pg psql -U nostrology -d nostrology -q -v ON_ERROR_STOP=1 < "schema/$f.sql" > /dev/null
+          done
+
+      # Each report as REPORT:CEILING:FLOOR: the most tests it may skip, today's count, and the fewest
+      # that must run, about 90% of today's. A suite can lose tests without skipping them.
+      - name: No suite skipped more than it does today, or ran far fewer
+        id: skip-ceiling
+        if: ${{ !cancelled() }}
+        run: python3 scripts/check_skip_ceiling.py "$RUNNER_TEMP/dagster.xml:2:700" "$RUNNER_TEMP/loader.xml:1:425" "$RUNNER_TEMP/mcp.xml:80:1325"
+
+      # What the gate found, for the deploy's post: the deployment reads the one line
+      # GATE_SUMMARY_B64=<base64> from this job's log, the last such line. always(): a job stopped at
+      # timeout-minutes still has something to say. A broken summary must not turn a green gate red,
+      # and each post has a line of its own for an empty one.
+      - name: Summary for the deploy's post
+        id: summary
+        if: ${{ always() }}
+        continue-on-error: true
+        env:
+          STEPS: ${{ toJSON(steps) }}
+        run: |
+          python3 scripts/gate_summary.py "dagster_code/tests=$RUNNER_TEMP/dagster.xml" "loader=$RUNNER_TEMP/loader.xml" \
+            "nostrology_mcp/tests=$RUNNER_TEMP/mcp.xml" | tee "$RUNNER_TEMP/gate-summary.txt"
+          echo "GATE_SUMMARY_B64=$(base64 < "$RUNNER_TEMP/gate-summary.txt" | tr -d '\n')"
+
+      - name: Clean up
+        if: ${{ always() }}
+        run: docker rm -fv gate-pg > /dev/null 2>&1 || true

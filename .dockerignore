@@ -1,0 +1,19 @@
+.git
+blocklists/
+*.ndjson
+**/__pycache__/
+*.pyc
+.venv/
+.venv-mcp/
+.venv-uv/
+.venv-crosscheck/
+# Run by hand on a workstation. The dagster image's `COPY . /app` must not carry them.
+crosscheck/
+nostrology_mcp/logs/
+nostrology_mcp/verification/battery-artifacts/
+.DS_Store
+# Do NOT ignore deploy/ or scripts/. The dagster image
+# (deploy/dagster/Dockerfile.dagster) does `COPY . /app`, and its daemon and
+# webservers load deploy/dagster/workspace.yaml from it at runtime. The assets once
+# shelled out to a deploy script under scripts/ as well, and an image without it failed
+# every asset; nothing there is shelled out to now, but keep scripts/ in the context.

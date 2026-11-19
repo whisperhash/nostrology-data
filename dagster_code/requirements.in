@@ -1,0 +1,70 @@
+# Dagster image DIRECT dependencies (deploy/dagster/Dockerfile.dagster; one image runs all four
+# Dagster services).
+#
+# Hand-edited, exact pins only. requirements.txt beside this file is GENERATED from it by
+# `scripts/python-lock.sh compile dagster`: every package the image installs, transitive ones
+# included, each with == and sha256 hashes, resolved for the box (linux aarch64, glibc 2.36,
+# CPython 3.12; scripts/python-lock.sh says which patch level, and why it need not match the
+# image's). The image installs that lock with --require-hashes. Never edit
+# requirements.txt by hand.
+#
+# Pin the Dagster core + its same-versioned libs together (dagster 1.Y.Z <-> libs 0.(Y+16).Z),
+# so a `dagster instance migrate` and the gRPC code-server / webserver / daemon never skew.
+# Bump the three pins below together; the lock then moves their same-versioned transitive
+# packages (dagster-graphql, dagster-pipes) with them. Re-run migrate, gated, on deploy (the
+# deployment's Dagster script does).
+dagster==1.9.11
+dagster-webserver==1.9.11
+dagster-postgres==0.25.11
+
+# The in-proc loader (dagster_code/pipeline/load.py -> the loader) runs
+# inside THIS image, so its runtime deps must be here. psycopg2 = the loader's PG driver AND
+# dagster-postgres' driver. pyyaml = the lightning signer-manifest parser (lazy import). duckdb
+# is intentionally OMITTED - the Athena loader streams gz, and the test gate installs DuckDB itself.
+psycopg2-binary==2.9.12
+pyyaml==6.0.2
+
+# boto3 - the nativized pipeline (dagster_code/pipeline/) drives Aurora/Athena/S3/Glue/Secrets
+# Manager directly over the box instance role, replacing the shelled aws-cli (Stage-3 native-
+# ization). Exact-pinned to the version the first build resolved (botocore comes transitively;
+# the lock pins it).
+boto3==1.43.37
+
+# certifi IS the CA trust store this image verifies TLS against, so it is pinned here as
+# version-shaped DATA, the same reason numpy/scipy and the geocoder tables are pinned below -
+# not because anything in dagster_code imports it. botocore does
+# `try: from certifi import where / except ImportError: def where(): return DEFAULT_CA_BUNDLE`
+# (httpsession.py) and then `conn.ca_certs = get_cert_path(verify)`, so with certifi installed
+# EVERY boto3 call to Aurora, Athena, S3, Glue and Secrets Manager verifies against certifi's
+# bundle, and botocore's own vendored cacert.pem is inert. Measured 2026-10-26 on botocore
+# 1.43.89: that vendored bundle still holds the Comodo "AAA Certificate Services" cross-sign
+# compromised in the 2026-10 eMudhra/emSign incident, while certifi 2026.10.23 holds none of
+# the four distrusted anchors and keeps the ISRG Root X1 canary. So DROPPING certifi from this
+# image would silently switch its AWS TLS onto a bundle with a compromised anchor - the pin is
+# what stops that being invisible. Floor: 2026.10.19, the first release without those roots, as
+# the maintainers' distrust policy sets it.
+certifi==2026.10.23
+
+# Nectar dataset publishing (dagster_code/pipeline/nectar.py). All ship prebuilt wheels for the
+# image's linux/aarch64 cp312 (no compiler in the slim image): pyarrow writes the Parquet;
+# coincurve (bundles libsecp256k1) does the in-process BIP340 schnorr signing so the nsec never
+# hits a subprocess argv; bech32 decodes the nsec; websocket-client does the bounded relay publish.
+pyarrow==18.1.0
+coincurve==21.0.0
+bech32==1.2.0
+websocket-client==1.8.0
+
+# The /marketplaces metrics compute (dagster_code/pipeline/marketplaces.py +
+# markets_geolib.py). pycountry is the ISO-3166 name/alpha table and reverse_geocoder the
+# offline GeoNames cities1000 gazetteer + reverse geocoder - BOTH are version-shaped DATA
+# (country names, city rows), and the metric agreement with the cross-check generator
+# (crosscheck/build_markets_snapshot.py) depends on both environments resolving
+# identically, so these are pinned to the versions the workstation-side venv resolved on 2026-08-23.
+# numpy/scipy are reverse_geocoder's install_requires (scipy pulls the cKDTree); both ship
+# manylinux aarch64 cp312 wheels. reverse_geocoder publishes only an sdist (pure Python): the
+# image installs a wheel built reproducibly from that sdist and committed at
+# deploy/dagster/wheels/ (README there).
+pycountry==26.2.16
+reverse_geocoder==1.5.1
+numpy==2.4.6
+scipy==1.17.1

@@ -1,0 +1,16 @@
+# nostrology_mcp - the MCP server image's DIRECT dependencies (deploy/Dockerfile.mcp).
+#
+# Hand-edited, exact pins only. requirements.txt beside this file is GENERATED from it by
+# `scripts/python-lock.sh compile mcp`: every package the image installs, transitive ones
+# included, each with == and the sha256 of every file PyPI publishes for that version. The
+# image and the workstation test venv (.venv-mcp, together with requirements-dev.txt) both install
+# that lock with --require-hashes. Never edit requirements.txt by hand.
+#
+# Separate from dagster_code/requirements.in on purpose: no shared dependency surface with
+# the Dagster image. Python 3.12 (scripts/python-lock.sh says which patch level the lock is
+# resolved for, and why it need not match the image's).
+#
+# mcp 2.x = the official python-sdk (MCPServer in mcp.server.mcpserver; the 1.x FastMCP
+# import path is gone). psycopg2 pin matches dagster_code/requirements.in.
+mcp==2.0.0
+psycopg2-binary==2.9.12

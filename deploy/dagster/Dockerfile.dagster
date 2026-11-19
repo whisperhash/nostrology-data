@@ -1,0 +1,58 @@
+# dagster-code image — the Stage-0 Dagster code location for nostrology-data.
+#
+# ONE image runs all FOUR Dagster services (code-grpc, daemon, webserver RW, webserver RO) via
+# different compose commands — guaranteeing version parity trivially (the "pin all containers to
+# one Dagster version" rule). It carries OUR Definitions (dagster_code) AND the loader: the whole
+# data pipeline (extract/load/register/dial/post-steps) is now native Python (boto3 + psycopg2) in
+# dagster_code/pipeline; the load step runs `python loader/...` as an in-container subprocess with
+# NO docker socket and NO aws-cli. See docs/design/dagster-orchestration-design.md. Target arch = arm64.
+#
+# Build context = repo root: docker build -f deploy/dagster/Dockerfile.dagster .
+# base-pin: python:3.12-slim-bookworm resolved 2026-10-26
+# Pinned by OCI index digest, so the box's pull is content-addressed (the Docker daemon
+# verifies the registry against its own CA store) and a rebuild is reproducible. The tag
+# beside the digest is decorative - Docker resolves the digest and ignores it - so a tag bump
+# needs a re-resolve and a new base-pin line in the same commit. Measured on this digest 2026-10-26:
+# ca-certificates 20250419~deb12u2, the DSA-6572-1 fix; 148 roots; none of the roots
+# compromised in the 2026-10 eMudhra/emSign incident; the ISRG Root X1 canary present.
+FROM python:3.12-slim-bookworm@sha256:6a0e06f5ba0b373d051aabd3fffb9b873f27f9a2a3a14bcbe37dee6f0e3bbc70
+
+# ---- base layer (heavy, rarely-changing): system deps + Python deps -----------------------
+# A DAG/loader change rebuilds only the final `COPY . /app` layer below, not this. (aws-cli v2
+# was dropped when the pipeline went native — athena/s3/glue/rds/secretsmanager are now boto3.)
+#   bash/curl         : for a shell inside the container; no code in the image calls them
+#   postgresql-client : psql, likewise
+#   jq                : likewise
+#   git               : image_tag / HEAD reads
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        bash curl ca-certificates git jq postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Dagster + the in-proc loader's runtime deps: exactly the hash-locked
+# dagster_code/requirements.txt, generated from requirements.in by scripts/python-lock.sh.
+# --require-hashes refuses any package the lock
+# does not list with its version and hash; --only-binary refuses source builds, so
+# reverse_geocoder (PyPI has only its sdist) comes from the committed wheel in
+# deploy/dagster/wheels/, accepted by its hash in the lock like everything else. pip check
+# fails the build on an inconsistent set. No -q: the "Successfully installed" line in the
+# build log is the record of what shipped. Only the *.whl files are copied, so editing the
+# directory's README does not invalidate this (cold, 80-wheel) layer.
+COPY dagster_code/requirements.txt /tmp/dagster-requirements.txt
+COPY deploy/dagster/wheels/*.whl /tmp/dagster-wheels/
+RUN pip install --no-cache-dir --require-hashes --only-binary :all: \
+        --find-links /tmp/dagster-wheels -r /tmp/dagster-requirements.txt \
+    && pip check
+
+# ---- code layer (the ONLY layer a DAG/loader change rebuilds) -----------------------------
+ENV PYTHONPATH=/app
+WORKDIR /app
+# The whole repo: dagster_code/ (the Definitions + pipeline/), sql/ + loader/ + schema/ + src/ +
+# data/ (read by the native pipeline). blocklists/ is the gitignored ~61 MB artifact - NOT baked;
+# a deployment bind-mounts it at /app/blocklists (blocklists/README.md).
+COPY . /app
+
+# The gRPC code server. The daemon + webservers connect via workspace.yaml (host=dagster-code
+# port=4000). DAGSTER_HOME + the run-store env come from compose.
+EXPOSE 4000
+CMD ["dagster", "api", "grpc", "--host", "0.0.0.0", "--port", "4000", \
+     "--module-name", "dagster_code.definitions"]

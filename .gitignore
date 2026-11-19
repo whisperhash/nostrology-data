@@ -1,0 +1,29 @@
+# blocklists/ is a ~61 MB bot/spam-pubkey data artifact, supplied by the operator and not
+# distributed. Not committed here (it drifts and bloats the repo); synced to where the loader
+# runs, and kept on disk locally for the test that reads the real lists.
+blocklists/**
+!blocklists/README.md
+
+# NDJSON extracts
+*.ndjson
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.venv-mcp/
+.venv-uv/
+.venv-crosscheck/
+# older versions of the /git cross-check, saved per its header
+crosscheck/ngit_check_*.py
+.coverage
+
+# nostrology_mcp call logs (structured usage data, local-only in v0)
+nostrology_mcp/logs/
+
+# The MCP batteries' test artifacts: reports and raw fetches, local-only and never committed
+nostrology_mcp/verification/battery-artifacts/
+
+# env / secrets
+.env
+*.pg-password

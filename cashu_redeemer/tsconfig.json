@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    // Erasable-only TS (no enums/namespaces/parameter properties): the test
+    // suite runs the .ts sources directly under node's type stripping, which
+    // rejects non-erasable syntax; tsc enforces the same subset so a construct
+    // that builds cannot fail the test runner.
+    "erasableSyntaxOnly": true,
+    // Relative imports name the .ts files on disk (what node's type stripping
+    // resolves); tsc rewrites them to .js in the emitted output.
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "declaration": false,
+    "sourceMap": false
+  },
+  "include": ["src/**/*.ts"]
+}

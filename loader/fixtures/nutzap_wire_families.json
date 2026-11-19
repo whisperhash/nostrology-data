@@ -1,0 +1,892 @@
+{
+ "_comment": [
+  "Real kind-9321 (nutzaps) events, one per wire family, verbatim from the dev nozzl",
+  "Parquet archive (s3://$NOZZL_ARCHIVE_BUCKET/c=regular/k=9321/, read 2026-09-18).",
+  "served_before_fix is the amount_sats the serving table held for the event on",
+  "2026-09-18, before nostrology-data#8 (null: the loader drops the event).",
+  "expected is the value under #8: the proofs in proof tags, nothing else.",
+  "expected.mint_class is the mint's class under #9 (loader/nutzap_mints.py and",
+  "data/nutzaps/mint_registry.yaml); the last four fixtures are real payments on excluded mints.",
+  "Used by loader/test_nutzap_value.py and loader/test_nutzap_load_pg.py."
+ ],
+ "fixtures": [
+  {
+   "family": "draft-content",
+   "wire": "2024-07 NDK wallet branch + nutsack draft: proofs in content, unit as amount[2] 'msats'",
+   "served_before_fix": 1000,
+   "expected": {
+    "amount_sats": 0,
+    "value_source": "none",
+    "no_value_reason": "draft-content",
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "ed2dc3ead9d4c52719063005660bddef5b74f7973b42b25919efe8d74120ab49",
+    "pubkey": "fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52",
+    "kind": 9321,
+    "created_at": 1721154214,
+    "content": "[{\"amount\":1,\"C\":\"0279df5a890852613946cf9272e648d664f0d0f16b8a349257e483468807dd92a4\",\"id\":\"00ffd48b8f5ecf80\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"c3e48cec28ff24245586b83c6d0e952f19e9e61ed6f8e1ceb5098ffc5b376ce9\\\",\\\"data\\\":\\\"029d32499c7e9dd4e9e56395111c20d488b46159c5ceb649685d1899514b5d7635\\\"}]\"}]",
+    "tags": [
+     [
+      "u",
+      "https://mint.lnserver.com"
+     ],
+     [
+      "amount",
+      "1000",
+      "msats"
+     ],
+     [
+      "comment",
+      "zapping from my nutsack"
+     ],
+     [
+      "p",
+      "fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52"
+     ]
+    ],
+    "sig": "237f6a19c1a483956351cb2710508573b9766575e5b440fe59c537f83e7b0f31ad581e843796c54b73b385156aa4d3e798b6fc676491c633a7ce331b785bce14"
+   }
+  },
+  {
+   "family": "proof-tags-unit-msat-ndk",
+   "wire": "NDK 81784d53 (2024-08): proof tags, amount = count x 1000 with unit msat",
+   "served_before_fix": 1,
+   "expected": {
+    "amount_sats": 1,
+    "value_source": "proof_tags",
+    "no_value_reason": null,
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "a8df14a52e68b0c29f44b2204937ef9b7697b207b2a713d504be899ff1b66d6a",
+    "pubkey": "fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52",
+    "kind": 9321,
+    "created_at": 1722538023,
+    "content": "",
+    "tags": [
+     [
+      "alt",
+      "This is a nutzap"
+     ],
+     [
+      "proof",
+      "{\"amount\":1,\"C\":\"023b3e017c6b1d1ba0dab1be9e9e2954a832c623d82fc340300fd9f101bbe1dd58\",\"id\":\"9mlfd5vCzgGl\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"1c449b3f4dbeb4a48f46d186bf16df061c99d864b35e5e99fbe335aac8e447c4\\\",\\\"data\\\":\\\"02769fa2735d76211db8b482138c02d7c9db22953e654477e8aa003d5e4cbafc04\\\"}]\"}"
+     ],
+     [
+      "amount",
+      "1000"
+     ],
+     [
+      "u",
+      "https://mint.minibits.cash/Bitcoin"
+     ],
+     [
+      "unit",
+      "msat"
+     ],
+     [
+      "p",
+      "46d1a2beabc36c1ce97a06ac8715667168956d05a0c8e9490f8a1c1d4f28c538"
+     ]
+    ],
+    "sig": "0f667650d859434e1ba1d1324db2b4c198d1269ec84cf0c76caf45cde38c69bdaccf70cb7dea94e5c19b4e19a03130f6a469e3ae4cf4c1f2d3008aa271bc014f"
+   }
+  },
+  {
+   "family": "proof-tags-unit-sat-olas",
+   "wire": "Olas on NDK 7529b23e (2025-02): proof tags, amount = proof sum, unit sat",
+   "served_before_fix": 21,
+   "expected": {
+    "amount_sats": 21,
+    "value_source": "proof_tags",
+    "no_value_reason": null,
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "cff1019e32fb6c5b8694a29102aee5ff6e90fddc890e9557cc918ca0f06f20f1",
+    "pubkey": "fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52",
+    "kind": 9321,
+    "created_at": 1739313453,
+    "content": "\ud83d\ude0d\ud83d\ude0d\ud83d\ude0d\ud83d\ude0d",
+    "tags": [
+     [
+      "alt",
+      "This is a nutzap"
+     ],
+     [
+      "proof",
+      "{\"amount\":1,\"C\":\"02855be522943198e294021045e40e910de6212048a3db4fd95cffdd6eedd38d27\",\"id\":\"004f7adf2a04356c\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"ad1898d230b4db1c58406ae533509c8b5c5f2884b7a8308a82da7c5ec89fdf0a\\\",\\\"data\\\":\\\"02b94ff48726f7c770967cb49ba102e50e822493fe372bd1dd25ae04d6da9b7176\\\"}]\"}"
+     ],
+     [
+      "proof",
+      "{\"amount\":4,\"C\":\"03a70926ea6042af4516137e7c6828738c336240c4809e88a68412831f137d5b7d\",\"id\":\"004f7adf2a04356c\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"e92704e68d4647bdc06c9cd50d8a27bf8014d84bb8e0c75609867c2ec127e587\\\",\\\"data\\\":\\\"02b94ff48726f7c770967cb49ba102e50e822493fe372bd1dd25ae04d6da9b7176\\\"}]\"}"
+     ],
+     [
+      "proof",
+      "{\"amount\":16,\"C\":\"03f71eb5d4b28a87de0e6de2073a2e858465072ce9f3a40330607a4ae739ec786d\",\"id\":\"004f7adf2a04356c\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"6afb7931f075887c05d81d27b92ffe4afe8df7366dfe1d6fa85535ceed8c6a90\\\",\\\"data\\\":\\\"02b94ff48726f7c770967cb49ba102e50e822493fe372bd1dd25ae04d6da9b7176\\\"}]\"}"
+     ],
+     [
+      "u",
+      "https://mint.coinos.io"
+     ],
+     [
+      "e",
+      "9d96d2df8170bf75aefa79da16a9f7a405b523418a183303e6320182526a2511",
+      "",
+      "",
+      "845ee75bddf14a51e7d3c1476cd51955dbb3052f38806efce88bd3e2ffff9736"
+     ],
+     [
+      "p",
+      "845ee75bddf14a51e7d3c1476cd51955dbb3052f38806efce88bd3e2ffff9736"
+     ],
+     [
+      "unit",
+      "sat"
+     ],
+     [
+      "amount",
+      "21"
+     ],
+     [
+      "client",
+      "olas",
+      "31990:fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52:1731850618505"
+     ]
+    ],
+    "sig": "7cc302eb27d0747ad3483b35778bbdc2be3faae39421c8da9ae314e0cc8123c497f554740e4ee7c93528c1183859597c8e91dc2b848bd38d7bb73f086a1317af"
+   }
+  },
+  {
+   "family": "proof-tags-no-amount-applesauce",
+   "wire": "applesauce: p, u, proof; no amount or unit tag",
+   "served_before_fix": 1,
+   "expected": {
+    "amount_sats": 1,
+    "value_source": "proof_tags",
+    "no_value_reason": null,
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "210568b44f78ef18bb0fa86dd433104777e64cbe73c2257043beb2d3beeb936a",
+    "pubkey": "4cc40bb9be49d9ff60fbf8801c2c50d26e8585d28f83d2cb1982c08746f8e5fe",
+    "kind": 9321,
+    "created_at": 1779315380,
+    "content": "",
+    "tags": [
+     [
+      "p",
+      "4cc40bb9be49d9ff60fbf8801c2c50d26e8585d28f83d2cb1982c08746f8e5fe"
+     ],
+     [
+      "u",
+      "https://mint.coinos.io"
+     ],
+     [
+      "proof",
+      "{\"amount\":1,\"id\":\"007311aa2fa58cc8\",\"secret\":\"[\\\"P2PK\\\", {\\\"nonce\\\":\\\"816e4e8585350334cce6910d65f8160896e7788f3fb904a7b02c6c0cce39562d\\\",\\\"data\\\":\\\"02e5269ee29e1ab5d6f3a26e504ad935ffc2d719eae7d82a2882a9a1b97f591155\\\",\\\"tags\\\":[[\\\"n_sigs\\\",\\\"1\\\"],[\\\"pubkeys\\\",\\\"02e5269ee29e1ab5d6f3a26e504ad935ffc2d719eae7d82a2882a9a1b97f591155\\\"]]}]\",\"C\":\"02ea93715046bba80261a2481a76df2e8c2c5b1b1eb453392ed78a6e683595bbd5\",\"dleq\":{\"e\":\"483651c4b6f0e1f769b1444be76dece5c2fea508234e822eb449ea7789a93182\",\"s\":\"e0f059eb72ffc61b609699baf43de85c9919cff850dfaf12e4a55c31f2625729\",\"r\":\"3f8dd5088be1c9f92df4e1d501bc105b9f50f01979cfc5e7d42faf493f4ff86f\"}}"
+     ]
+    ],
+    "sig": "0472bb81b944ef9fc634bfe1ea83b98ac396b7e71897778134d7010ccceeeb1e05eda036b6eb1a38a42f6375d4c275f1b5dee4930908748d2c36b8f28a096ef7"
+   }
+  },
+  {
+   "family": "amethyst",
+   "wire": "Amethyst v1.12+: proof tags, unit sat, no amount tag",
+   "served_before_fix": 2,
+   "expected": {
+    "amount_sats": 2,
+    "value_source": "proof_tags",
+    "no_value_reason": null,
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "a80e3638c61d7ebde537b8653312430fcb4de35a43e4ee2fea11e174d73c01e6",
+    "pubkey": "460c25e682fda7832b52d1f22d3d22b3176d972f60dcdc3212ed8c92ef85065c",
+    "kind": 9321,
+    "created_at": 1779913542,
+    "content": "",
+    "tags": [
+     [
+      "alt",
+      "Nutzap"
+     ],
+     [
+      "proof",
+      "{\"id\":\"00107937db0cc865\",\"amount\":2,\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"6034b92fc6eefddb07d35a892f36603d\\\",\\\"data\\\":\\\"02c84184e1e45f91663f4e5e7d54bb682c6b2cee3579fee13bab57fee9ebdc0b91\\\",\\\"tags\\\":[]}]\",\"C\":\"0386276af121d1d627e94cdae6d980044f4ad4f6ca1fd75ef59f68ef23b2a721bf\",\"dleq\":{\"e\":\"70ea060c290f5f2248cd9bd26ad40cf3813b5dbc5b8d644fa5f9b7215b905de4\",\"s\":\"7d42764ab0b014b225ed401c11caef68322b56a48c2463c8c6d295a99b5bc5ae\",\"r\":\"1c0b73a49f86fbfbced16c00b4b5a695f5639e87757f900880b7cbfa57bf26d3\"}}"
+     ],
+     [
+      "u",
+      "https://mint.minibits.cash/Bitcoin"
+     ],
+     [
+      "unit",
+      "sat"
+     ],
+     [
+      "e",
+      "fd3c3984e9f0eb19a18700489c4b0b59dcaad977466969dbbbeee7a9d80c80af",
+      "wss://nostr.mom/",
+      "460c25e682fda7832b52d1f22d3d22b3176d972f60dcdc3212ed8c92ef85065c"
+     ],
+     [
+      "k",
+      "1"
+     ],
+     [
+      "p",
+      "460c25e682fda7832b52d1f22d3d22b3176d972f60dcdc3212ed8c92ef85065c"
+     ],
+     [
+      "client",
+      "Amethyst"
+     ]
+    ],
+    "sig": "53d09dd34db7a21299fbfddfbc50ccaf63142638158e2cb45d3b1400d03fb0b76824f8cfc5c2a19536a42d31e61b08333cc0767f8ce5ae18886758ed3a65f94b"
+   }
+  },
+  {
+   "family": "string-amounts",
+   "wire": "cashu-ts 4: proof amounts serialized as decimal strings",
+   "served_before_fix": 21,
+   "expected": {
+    "amount_sats": 21,
+    "value_source": "proof_tags",
+    "no_value_reason": null,
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "c041bc1981806ef1de6d911f3aa5e8775048478ec8563432254f4916c374cf26",
+    "pubkey": "588fa4f584ba8ff78eed470131932e61ab3f031fda9d6d464135660d162c25dd",
+    "kind": 9321,
+    "created_at": 1781516590,
+    "content": "Kicksats ad payout",
+    "tags": [
+     [
+      "proof",
+      "{\"id\":\"007311aa2fa58cc8\",\"amount\":\"16\",\"C\":\"031ede06729d60462034b3b727ee8b8a810d56bf7835dc430de7fbf3c65c23760d\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"d5b6ee70edb0d55d4eb43110ea7a94867f9f9112e00752eca4c9e63e978e7c76\\\",\\\"data\\\":\\\"02778f9de1cf06b40a791d2bbeb3254253d95a533e87dd9be2e26b2f1ebb6c7591\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"a0df019f7877191d1e22966c975c81f955d95910cf007434ed19b0586a452fa7\",\"e\":\"84d72352b1e323f012fa8657b7a005901d27e72d70b437cdc1aed50c6ce66d1c\",\"r\":\"11ce265062d787aa80c1d32cbda73b517536146d6e641cabf2578055066c5c75\"}}"
+     ],
+     [
+      "proof",
+      "{\"id\":\"007311aa2fa58cc8\",\"amount\":\"4\",\"C\":\"03bb5e597711dfa13319a21fe9db640c598c8bc7976cf8ae38f29973208b587cc6\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"acb7d6b4b82755078b367f259a4f713a40a6b958358da778f7ed1a77ceab4ba4\\\",\\\"data\\\":\\\"02778f9de1cf06b40a791d2bbeb3254253d95a533e87dd9be2e26b2f1ebb6c7591\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"61eaaf1ff2b10ac69326972648637489e4eca3933541bab047b142e63a897dc8\",\"e\":\"b274faa74d5b9f170018c2e1ea32b39e926b058e4653f1c4ec79c33ddae45b2d\",\"r\":\"6347ca2efa3bad508b1b1bbc39fdd1649f226a51a5363256706f77c8e768bd87\"}}"
+     ],
+     [
+      "proof",
+      "{\"id\":\"007311aa2fa58cc8\",\"amount\":\"1\",\"C\":\"02af37f1b9dc10dd5a5600197b947587c27ba8f0edeae0be313a09fa7d6496da03\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"2756f1f275d6c23909ee59e225fc29ce7ec81fa27007327e58c2fce22ae059b4\\\",\\\"data\\\":\\\"02778f9de1cf06b40a791d2bbeb3254253d95a533e87dd9be2e26b2f1ebb6c7591\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"1e015dca4f5003e6b3b8b0a9a054586e65d0b83663300ab2b6bdd42f2873c89b\",\"e\":\"cf3b4c53231979f19ec3214b481c5cf74fe29b5875d7eac83196a71807687657\",\"r\":\"4b96f36a4823a6ab9512206ee131e673db50ec88206e14409e7f59ec5de309b8\"}}"
+     ],
+     [
+      "u",
+      "https://mint.coinos.io"
+     ],
+     [
+      "p",
+      "778f9de1cf06b40a791d2bbeb3254253d95a533e87dd9be2e26b2f1ebb6c7591"
+     ]
+    ],
+    "sig": "d313a39cd4e2298344fc2620dbf6c5d18833f907fec105f3a9414615f9f78d69e0f585d4924015f485dc03f866bdd1ebd8a58b26ec2ef63f2ad14821b5fc7fe5"
+   }
+  },
+  {
+   "family": "amount-tag-1000x-unit-sat-lnuts",
+   "wire": "lnuts: amount tag in msat while saying unit sat; the proofs are right",
+   "served_before_fix": 21,
+   "expected": {
+    "amount_sats": 21,
+    "value_source": "proof_tags",
+    "no_value_reason": null,
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "54a413ad5d8243d3a9ee3352480fb425316d5e1e82455228bcd40f3c7c2b7f92",
+    "pubkey": "7726c437ccf791f6ded97dbac1846e62019e5fbd24f42e9db2f640f231c3c09a",
+    "kind": 9321,
+    "created_at": 1765363555,
+    "content": "Cashu tokens from localhost:5173",
+    "tags": [
+     [
+      "p",
+      "7726c437ccf791f6ded97dbac1846e62019e5fbd24f42e9db2f640f231c3c09a"
+     ],
+     [
+      "u",
+      "https://mint.nuts.cash"
+     ],
+     [
+      "unit",
+      "sat"
+     ],
+     [
+      "amount",
+      "21000"
+     ],
+     [
+      "proof",
+      "{\"amount\":16,\"C\":\"026410079d83c0c12b27955fedae00cfdb0d0c0026897c13c5f30044d8f86136bd\",\"id\":\"003e0daf91d2096d\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"d4f3e6f88c61cd9bfea494183005ed125f9b61aa5ae4aab0c7473d8e7b20f662\\\",\\\"data\\\":\\\"02d1cd6d67585e8d97a795b772c84fc475b33a36619f55933c756fe775e0133511\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"14727a9013b9310e05a57fe36dd0100ffd7e52231ab603f947809380105cc24b\",\"e\":\"db9bfc6e2052aa25381ad49d218b0079652d36d293055921516ae0097edf688a\",\"r\":\"9a68bde6a565c08ad9de1678059e7011906f86df432738f7461a83a0e5272049\"}}"
+     ],
+     [
+      "proof",
+      "{\"amount\":4,\"C\":\"0287b181de193b6bcc088b9f5d88ca5067a20b37424361aa9d2fc581dbaead5d0c\",\"id\":\"003e0daf91d2096d\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"d0783677c9f1d90cfc2ee919731b0c95101428c3a7472b558817ad98e460cbb6\\\",\\\"data\\\":\\\"02d1cd6d67585e8d97a795b772c84fc475b33a36619f55933c756fe775e0133511\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"0834a3efadf4ede9ce9b2e22f2c4997e65c17586db1d6caa97651ff3c8c89334\",\"e\":\"c9bab3ce9cd69c3cd0829376f491b1cc9970ec9a805c316ac8fd70e798deac41\",\"r\":\"f55cc48b8de5af6b21d4bd66076a1a1192fff70a92bbe83cdbe6aeb6703f9994\"}}"
+     ],
+     [
+      "proof",
+      "{\"amount\":1,\"C\":\"028358858eca8a777176e91bafd47b7c74ece5b93cb78e0ada39cdb38ce3f2b29d\",\"id\":\"003e0daf91d2096d\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"f1300068ba5f69b0b09b9af4a0b58c6186d7b6832f8823b1719700200df8cd4f\\\",\\\"data\\\":\\\"02d1cd6d67585e8d97a795b772c84fc475b33a36619f55933c756fe775e0133511\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"6ec03b2f322b6ec5ef6616e72ef3ae917483ff4013c66e48345040ae5ba2fbf5\",\"e\":\"a9645ed8c13185299edd9a71aa03cdb67f0bcd97e95a005f9e5cb4501469a4d9\",\"r\":\"f5614099e693fcd67cccfab70b7de1478058e966af012999b06b2e1752ffc626\"}}"
+     ]
+    ],
+    "sig": "d23a78cda49f3a2fd6dd179675d0cc022fcc04b51d2a2a2840f05d98cb2e42235f90b6466aae0988ba37519a398e2f2c15fc9d881f4874c96d3db5f2bdc00352"
+   }
+  },
+  {
+   "family": "encrypted",
+   "wire": "NostrPulse 'Encrypted NutZap' (2026-09-08, testnut): nip44 content, msat amount, no unit",
+   "served_before_fix": 76000,
+   "expected": {
+    "amount_sats": 0,
+    "value_source": "none",
+    "no_value_reason": "encrypted",
+    "loaded": true,
+    "mint_class": "fake-backend"
+   },
+   "event": {
+    "id": "ed3a29e6bc3b5ef9e1fdc6a7a3f7052526c0c637350a523ca7f9b4a9c6d0f445",
+    "pubkey": "09e4e56ef0cfe8c0e368372b49f1ce325c30198f0b0881b2d3cfdd709049a32b",
+    "kind": 9321,
+    "created_at": 1788856379,
+    "content": "AnMxkDqmiVIBmFxxkvLfHeHp18OhC2i65ZxLGPaAlgq9sJ0p8vBQA93/X61fch1eF64PTeQqFasO2RElLBubI+97zvQuBzNuaAFOnKoy/i1t+zCeZ1gayoVFw/PyIpvm2LzNWDhbtiZShkEzZwovtCntMEjM5ThjZGEW+3g6k4Z6lrZhPx24RJuAcIZtHFoXzVxNckWPBNRyAzo/aH+KVAbB8HMr0U9wsTsSamuy81a6/ZLSl6JK1E4F0yDYpwA18hCBPPAanrJ4jB4HuIUfRvY+9h+KELKhXjXvkE2GNRBi5OrJ1eCORYNxJyeTl8o9EHaBudpS22h+fJAU9nuIDoCXVACc3W8K+uuHNipf8agfT3jhv7zAvSKi13mONm7GdCny4U0kQ/KTKEEyx2VZCWaTEjCeFyyWG76wH/tMY74Oxow0Bw4KOM96V7tKXo4XdXoY289tZ+X57my1ULg4HLpa7u+68Y5kbeHbn7l5lHPctn2VpYV0Qs25Wa6607WsLvAgM1fHvxdzuudaCkV4fclimISUomWcHkHLjn7k3Djsbfv0wew/hkV0LV4qPExsdOa6ZAcNrMaktPrOBImlBGcSN7NSI4e13Ma/qu3AciMCBIuBu8BIghdYkeK8LguAo2C4h8uqZY4Aupjh8NINbAW/i1LJ4EC3N3IAfq17lvhTvW8BowrXz6Ku9ib102D1K2pA1sQAr6BPdxdgXJ/l6hEZoZ+1B3Ut4TlaLoMRXUGefY3ZLQDXc8I3ynUhQSqSihGjeJ9aaVTqPg5u0cHGo5ZtPnKT0v8BaZ9qBIqacXAS8M6IXT7MGVQRL4/9eh+IjhKmYkXbp75InzDTBOgW8C9LRWNWn5BqK1MyzdZGvRpuoQh0sPLKrSO6iL18PioPraDk90qgu8BdhdnR36kJGpdKtf6DyaXx8VMc/tBP4/38UpNXGDhhtvfHinijBRUfu9X2HBlSebKIb+PsDRIub99yoaFKHPDiiFgtQrJytNoicUH4/vQkvIZmg/wdRg6ExrXCVTv3goXZEmesKX8EV5eTd3oAFsdKVufyttqcz5oAifMH6CeP8SwQJZI1Nj/wTGCVt6IuL1zN/FG2j1/hxVU2PBk9f31WVQAvQ94OUotaL4hRMYsG+NRmMIjtVlT4cjGHspVj0mz5K5YYOG7b0GzxP6a2jcGoC5nB7lbQjszC3rJFyJvngwGsqNCHwRK3xpIWh7NqPaC/B7KufNLqfL94ZxMadxmcXbQ3MMYw3BCH28g/4e2Tj9mzDe3CfBtaPtmKKjHvHPD5VgVVkF9GrJzMNWJtKekhR+qyZs8af1z+cWJ4g2VPRf6sIy+OTOG8kcD2prBGAfoKaUQSlRcRlHG0XrzcYPoooeBi3byUsxcB2GWwHHAk4ItYXDbiJSB5JT/DKiD2gKDBsFbLKbGNXHzZ0VgDWIDmBeBaDyQ8smlo7tjlK5OdpGmCG4Clk9EHgUx0O/t1A1RhwggjgYABNcg67XdRQMyVH4l4xzKdTeQe3GWRW3V6Zz9MzYllE8IGJtv/SXTaCOHmLlLYrPCM7FHPb8w9UQlAnfXW9VZKerjJywvNPeC/U3NVsdviU0vqeJE3xyg07qQhW2O7UiRbNdQsf/vimMQz0nHJBWtLH24cJTerOMh0bLgnJNaMAkDiPLF0cHCdkWET0J7LIf+CoCTtjsHPkOqnnVhP4VycRqontEwEDclHy0hxqSm67S4/Zd+84/p8xH9OGXoZaW264o8HBw5knD2hS9SY2JGtxNgCeZCqWZHP2AqwYJUQZ4lADJG6t+lFTG5LevM5Yrz3VQYw0Ag3Ff+tNCxx03+OJ2fZkvTOrth0bippN8aEC1KmTFukFWC7e6+Ggxm7Lf11VPKmKDiYzQy9yzTi6Ok4dhVxIrlUJhwxE0Nal9U+6rzWIF6cgJpf7tvKa+sI3l9I5oYrHB06ERvk46fIo12Ony5TIv8lldvlXVqRXOsHEbWJYw1qoajYj42xxroTtpBiPgJvTJ8EAThm1e2Nwo4Ny36oWl8o3g9knroQpwKVf+EtNvqzWEovFya0PqjQDIdWn7xVkx8VqeUspyHf17B50X+Kp3baJuMhN1W4hsZKlXf5nAyvum06TpWSM8d5hxhyALcvs/MEqNgpaLcCDrc9tOs1nG9ImnEWH2ERGWENngXz3KzjblfUggFbd0JWHX3dQrj6Wo8li95fMCYPC4vJhFGK9BFfDzKZF8w6CCWgDobikYcAzwN3XzCk91OH6H7i2HSdlPXjTfRu5PaakFOhG1HWEhdAjfcZH44jEP8aZRY95xzmf34WwNoLw0SjMq16aQeZa7F2fT4DpNeMMkyuD+g5pxPgFKLW9oZ0YFRjyfhkmINljCy7zkzAeAfr/6hM8/njy1IuFbEG/eEoASsbBQI2/4DL9SS/QIKdbT9kZ5n551mUOKR3+llpdYjAWlP/KmvbQNVpT1ZFC1BZ111ElMQ+d4E=",
+    "tags": [
+     [
+      "p",
+      "09e4e56ef0cfe8c0e368372b49f1ce325c30198f0b0881b2d3cfdd709049a32b"
+     ],
+     [
+      "amount",
+      "76000"
+     ],
+     [
+      "u",
+      "https://testnut.cashu.space"
+     ],
+     [
+      "encryption",
+      "nip44"
+     ],
+     [
+      "alt",
+      "Encrypted NutZap: 76 Sats in Chaumian eCash"
+     ]
+    ],
+    "sig": "a3ed00d52dde0e9e19ec5a3c1d15ee3c6c071105b082fc00354856d6c2442e55319cdd801a57f1733b2a875459b165bfce89a26f123a7d431ff5bfac6525df0d"
+   }
+  },
+  {
+   "family": "cashuA-in-proof-tag",
+   "wire": "RUNSTR-style carrier (2026-08-28): a cashuA token string inside a proof tag",
+   "served_before_fix": 5000,
+   "expected": {
+    "amount_sats": 0,
+    "value_source": "none",
+    "no_value_reason": "cashu-token-in-proof-tag",
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "5d1c949d19297ca9b3ee803a9e50e97950f65fd2b359293189f2861c15fac1f5",
+    "pubkey": "84231e4d14a72762a2fddc7dd0de73ca2034be27198ce7697e9eafb8ee6c3802",
+    "kind": 9321,
+    "created_at": 1787919258,
+    "content": "cashuAeyJ0b2tlbiI6W3sibWludCI6Imh0dHBzOi8vbWludC5taW5pYml0cy5jYXNoL0JpdGNvaW4iLCJwcm9vZnMiOlt7ImlkIjoiMDBhYmMxMjMiLCJhbW91bnQiOjUsInNlY3JldCI6InRlc3Rfc2VjcmV0XzEyMyIsIkMiOiIwMmFiYzQ1NiJ9XX1dfQ==",
+    "tags": [
+     [
+      "p",
+      "91c9a5e1a9744114c6fe2d61ae4de82629eaaa0fb52f48288093c7e7e036f832"
+     ],
+     [
+      "amount",
+      "5000"
+     ],
+     [
+      "u",
+      "https://mint.minibits.cash/Bitcoin"
+     ],
+     [
+      "proof",
+      "cashuAeyJ0b2tlbiI6W3sibWludCI6Imh0dHBzOi8vbWludC5taW5pYml0cy5jYXNoL0JpdGNvaW4iLCJwcm9vZnMiOlt7ImlkIjoiMDBhYmMxMjMiLCJhbW91bnQiOjUsInNlY3JldCI6InRlc3Rfc2VjcmV0XzEyMyIsIkMiOiIwMmFiYzQ1NiJ9XX1dfQ=="
+     ],
+     [
+      "alt",
+      "NutZap: 5 Sats sent via Cashu eCash"
+     ]
+    ],
+    "sig": "be694b96823aca8e9f25ae06bff01f3fbd358e10380a621cdefb081880c6083ed5d70f7b679d95e21855e5a7cf022e04057052597c1111073073860cb8249a91"
+   }
+  },
+  {
+   "family": "cashuB-in-proof-tag",
+   "wire": "a cashuB token string inside a proof tag, amount tag in sats (testnut, 2026)",
+   "served_before_fix": 50000,
+   "expected": {
+    "amount_sats": 0,
+    "value_source": "none",
+    "no_value_reason": "cashu-token-in-proof-tag",
+    "loaded": true,
+    "mint_class": "fake-backend"
+   },
+   "event": {
+    "id": "b9023382a09b2e4d2395437ebc5bbd2757d0ac8fa18483eb88bb8630b5a0dca4",
+    "pubkey": "29e61c2e3296477bb8765a4bc85688f99e2beb18e69ca050d7f78cd7a95f9207",
+    "kind": 9321,
+    "created_at": 1774706087,
+    "content": "",
+    "tags": [
+     [
+      "amount",
+      "50000"
+     ],
+     [
+      "unit",
+      "sat"
+     ],
+     [
+      "proof",
+      "cashuBo2FteBtodHRwczovL3Rlc3RudXQuY2FzaHUuc3BhY2VhdWNzYXRhdIGiYWlYIQGISnS7L8Xubl-Vj4n55ObPeSQfvJ_RAS1oEbBUp4vv_mFwhqRhYRBhc3iVWyJQMlBLIix7Im5vbmNlIjoiUUVHaUFVekxLd2RVQ1lqTm5QdHIrT0czNlk0clFQS1V0QW1EWFVUMUNKcz0iLCJkYXRhIjoiYWZiMzczZTMzODkzYWU4ZTA5Yjc2YzRlNWZlNzdlZjVlOTVmNjY2Zjc4ZTEyYjU0ODVhNjhmMzIyODZiNzk0NiIsInRhZ3MiOltdfV1hY1ghA2iXAgUVIhmIIXz9RshV_w7YaOt8Pv9IJsxHZGKz6cDuYWSjYWVYIO1CYV2y6mH3cbcA6eJUtxMVUr_4K-DoR5Mxc5vx8RqgYXNYIPSv1APwNfCRfAderJGh32mHVzR848mpk0RfTfvJLoICYXJYILn8ggiwDfS6ZTrEnXHh3toOFhoUad5Zb4AKjOB5EIuApGFhGEBhc3iVWyJQMlBLIix7Im5vbmNlIjoiVmxvS1B5M0Q1Nk1UWUxrL3NVbGFidmVRVmJFVEs4S1JmYXNhQWUyZ2s0OD0iLCJkYXRhIjoiYWZiMzczZTMzODkzYWU4ZTA5Yjc2YzRlNWZlNzdlZjVlOTVmNjY2Zjc4ZTEyYjU0ODVhNjhmMzIyODZiNzk0NiIsInRhZ3MiOltdfV1hY1ghAsjfCKebOl5IvJQrxeVfGfwJ6dVoE8AwFuya0KqLYI_8YWSjYWVYIAF6al7XPGSwundxcQuLwEvdVtHrMpT_v-bm3wyoEFn3YXNYIN_Ga2ZcAginoAv_zDqXAeNdDfGyJtBibV0U0peG3AQDYXJYIPXIOAm9NfGGgW8fY_oARPPZTiikqhS0GZbudmNK5kSZpGFhGQEAYXN4lVsiUDJQSyIseyJub25jZSI6IkNSU1dob2QzY2Q2VmdaSUdjWEE5SzFtRUxhZjVOdkwrYWptWXJST1ZFVUE9IiwiZGF0YSI6ImFmYjM3M2UzMzg5M2FlOGUwOWI3NmM0ZTVmZTc3ZWY1ZTk1ZjY2NmY3OGUxMmI1NDg1YTY4ZjMyMjg2Yjc5NDYiLCJ0YWdzIjpbXX1dYWNYIQNpEbiaH_G_hQWmwFl2ryj9rz68BR9I3WHGUuUafutvIGFko2FlWCDlAazXk9jvdfl3-VvOKyKHIt5qEbmIz0hBGQjyX7DQ-GFzWCBV1Ug_7s3g-MT9W0EhQgWFTFumiuK_LzBtQeM9yxQsbGFyWCBbGLpmznbXvSVHvfIuHV5LB9qsBZGVFaqCeCpV1D99KKRhYRkCAGFzeJVbIlAyUEsiLHsibm9uY2UiOiJQRTRXMDFEZXEzT3JNWW5ZMHdxSnhLTWdVVTFoN1RTZ1BkeGFBUXgzV3lFPSIsImRhdGEiOiJhZmIzNzNlMzM4OTNhZThlMDliNzZjNGU1ZmU3N2VmNWU5NWY2NjZmNzhlMTJiNTQ4NWE2OGYzMjI4NmI3OTQ2IiwidGFncyI6W119XWFjWCED9f4x3Mkjv7yqcDFfdNBLqsWX44S2YXitZcLtccFYva9hZKNhZVgg4RnmTxHC3oOmLlWFSjFPrIZ-R5Tr0whi8JW4EeGL0jZhc1ggGky6flhAkNoD-7wuz53PUreZx0ODMg7u0Zh_ktgKT0dhclgg65eePfgdLmz_fl0gv6mWAqZJDt_6Vs6gTQOaWsVKKAWkYWEZQABhc3iVWyJQMlBLIix7Im5vbmNlIjoiSlNabHl1dzdpT1Y0VktuMXN2cllCVmxDMExicGlvS2cvamZCTVFJQXVUOD0iLCJkYXRhIjoiYWZiMzczZTMzODkzYWU4ZTA5Yjc2YzRlNWZlNzdlZjVlOTVmNjY2Zjc4ZTEyYjU0ODVhNjhmMzIyODZiNzk0NiIsInRhZ3MiOltdfV1hY1ghA_Fimh4HlqBvCo6nkvkMkcMmr75QcwTFX_bXf-tAEyvwYWSjYWVYIGROX2johQGmYGNNl7ULk1hXLd-1V8bv4oodSa9pTlOkYXNYIKETE3Ia-30mfatMcyg8jDFoRw3waupxiXDbC5_vf8txYXJYIISUq7sTpjCg4pDGdiif_IFOZHqdP_jH4w81gKQL0lhypGFhGYAAYXN4lVsiUDJQSyIseyJub25jZSI6ImNSdHAxSGNBY2Rwa1BnZzdkZ1RmZks5d09hQVFqeDk3Sm9vZjQ5cDYwa0U9IiwiZGF0YSI6ImFmYjM3M2UzMzg5M2FlOGUwOWI3NmM0ZTVmZTc3ZWY1ZTk1ZjY2NmY3OGUxMmI1NDg1YTY4ZjMyMjg2Yjc5NDYiLCJ0YWdzIjpbXX1dYWNYIQImyGFZ9hCrSOtkBCMwUG8eLF9XpBchuaXPnZpmOs7FGGFko2FlWCCsrDHkQnxeVqQLFHnhEeY69hAOJOl6eComBKhCihnxKmFzWCAguorC7qvyAiWWN2948wEQcTscEZkeRaNhq5D5MLaOWWFyWCBi45kz7_yeE77cMl4dDGsfDsbFlAN_OlGYjrUxxO1iAw"
+     ],
+     [
+      "u",
+      "https://testnut.cashu.space"
+     ],
+     [
+      "p",
+      "afb373e33893ae8e09b76c4e5fe77ef5e95f666f78e12b5485a68f32286b7946"
+     ]
+    ],
+    "sig": "0ee8ffe47c3810aabf17b1057882adfaca93d46949da82a2b14110e58d811e03fffa3f3a2cce173fd7375b26453a39c4c4d4d54f285e8aa864422a16aef57607"
+   }
+  },
+  {
+   "family": "wrapped-token-in-proof-tag",
+   "wire": "Robots Building Education's older builder: a wrapped {proofs, mint} object in a proof tag",
+   "served_before_fix": 1,
+   "expected": {
+    "amount_sats": 0,
+    "value_source": "none",
+    "no_value_reason": "cashu-token-in-proof-tag",
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "e8fca507a5fc38296b6dc7746e1ecc7396b86d9c45d0325833c720571e984f33",
+    "pubkey": "ab216c04afb690e0ea069415273801c6fb7469c28de8c101e49eb031c00fe2d7",
+    "kind": 9321,
+    "created_at": 1739928757,
+    "content": "testing int",
+    "tags": [
+     [
+      "amount",
+      "1000"
+     ],
+     [
+      "unit",
+      "msat"
+     ],
+     [
+      "proof",
+      "{\"proofs\":[{\"amount\":1,\"C\":\"0221521a0907ddc7ae7bd09ed3cdc9c73c224f572c4d2f670c258953fb2cba5a8c\",\"id\":\"00500550f0494146\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"fb25bd0164051b8578562e28618530e804d1b17855b09ee21e43545a77d4b499\\\",\\\"data\\\":\\\"02d6b6d7d782156d02544c560fbe8abf08c7916d69b381a2272c5833f8af17b2ef\\\"}]\"}],\"mint\":\"https://mint.minibits.cash/Bitcoin\"}"
+     ],
+     [
+      "u",
+      "https://mint.minibits.cash/Bitcoin"
+     ],
+     [
+      "p",
+      "d6b6d7d782156d02544c560fbe8abf08c7916d69b381a2272c5833f8af17b2ef"
+     ]
+    ],
+    "sig": "27a8cf6cd107e52cb8de19c33b48af93fe838e18870647a084dd82ebdb45f137ba9e7c01eaf5bf43de9e09e250918e210770dfe2fc43f7fed80c7ee3bfe4c42e"
+   }
+  },
+  {
+   "family": "content-proofs-westernbtc",
+   "wire": "WesternBTC bridge 2026: a plain-secret proof JSON array in content",
+   "served_before_fix": 50,
+   "expected": {
+    "amount_sats": 0,
+    "value_source": "none",
+    "no_value_reason": "content-proofs",
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "9d9feb1b94bd52cff7942a35d44ab975e8fa273b34d20f73eeb85c506c6bba7c",
+    "pubkey": "1692f5fca340da74457e10a8328d660f22aa158d78ffb7736ea9d3d218323981",
+    "kind": 9321,
+    "created_at": 1770033956,
+    "content": "[{\"amount\":2,\"C\":\"0399b7b749518b894373f964ba156edf2c12daa8121c1633d1e3b81f0ca1544205\",\"id\":\"00300181af4cf32d\",\"secret\":\"331f04d71b936ed28b5456a347a3ff35b8bd766961c32a9a410c8eba3b294c00\",\"dleq\":{\"s\":\"d63dd5835aea7f03d8daf22cf6b31db1ca41646036e9d6b2dbfd077d3715d67c\",\"e\":\"c1f3958009b21e82dd31e1c65c7cb229791738d4f351a7a57d2c41cc2322a57c\",\"r\":\"ef845fcf4e12704aa1ddc2b8c808f3f45e2228cbac3bde579cc2da1a23e2d31a\"}},{\"amount\":16,\"C\":\"026a680e856a15e3b2b1fc1a683b90fce8ae14f16c6237b3b1f6a3dca18dfb178b\",\"id\":\"00300181af4cf32d\",\"secret\":\"d796f610ed4b2a58a5c27bcb89d92f98dc09fd1ca370ee2a10b07053a3397895\",\"dleq\":{\"s\":\"a21e12806d4f28fd4748b23ff4d6c9df9b4718f92d2c10574f4554a030d2d284\",\"e\":\"80ad9a8f582f697d0fd61ef3d7b87a1540759e9a44789063c339f76d9fdf3604\",\"r\":\"ff451f4773ea160e7a641e376378fbd2f35e34d0a5504f9ec25663e3d314aacb\"}},{\"amount\":32,\"C\":\"02533d993764874480e481b67fa2e7ad75900fa2fd2fd563616e55b3df42fc3e4b\",\"id\":\"00300181af4cf32d\",\"secret\":\"fb5e1937c4c1cd0499cf64e80cbcee27674827baa44b86f92a53a7e13f700e9d\",\"dleq\":{\"s\":\"128cc482c9be09f022b01ff588c020c80e7451ea1a334e5c2c4d6548827cb42a\",\"e\":\"e50561f1623594c406a6db19d9466cc1484080057099004af503279c20e260ea\",\"r\":\"16ba0d38d412786b1c4512829e44b5c3db9d99012360a7540452173fd3289093\"}}]",
+    "tags": [
+     [
+      "p",
+      "0e29efc2a3eb6966403e8c61cb8bea6d78527af5e0565a2baa0f313eff142af2"
+     ],
+     [
+      "u",
+      "https://mint.westernbtc.com"
+     ],
+     [
+      "amount",
+      "50"
+     ],
+     [
+      "zapper",
+      "0e29efc2a3eb6966403e8c61cb8bea6d78527af5e0565a2baa0f313eff142af2"
+     ],
+     [
+      "comment",
+      "testing"
+     ]
+    ],
+    "sig": "ac1cc8eafefd06b915450abb49fc7d457c723b300286709ac76aa52a049e8c888e076fbb2abb1c411bc5f76226e734d91586daf12aa5b09f3e9d55725c728fe9"
+   }
+  },
+  {
+   "family": "content-token-cashuA-pwans",
+   "wire": "PWANS (Freakoverse): a cashuA token in content",
+   "served_before_fix": 1,
+   "expected": {
+    "amount_sats": 0,
+    "value_source": "none",
+    "no_value_reason": "content-token",
+    "loaded": true,
+    "mint_class": "test-wording-live"
+   },
+   "event": {
+    "id": "f5105639ba2591c0fd05564ba04632ad047c4b72d8c1986935c3ec7dce9c5417",
+    "pubkey": "6c5f99042706612be879b0104dc6e5b7693c759e8924e935d4a650cd064c056c",
+    "kind": 9321,
+    "created_at": 1765285285,
+    "content": "cashuAeyJ0b2tlbiI6W3sibWludCI6Imh0dHBzOi8vbWludC51bmNsZXJpY3MuY2FzaCIsInByb29mcyI6W3siYW1vdW50IjoxLCJDIjoiMDJiMDdlMzU0ZGY1ZGRhMDFjMjA4M2Q1Y2E3ODZiM2QzZGMwMDY4MGM2OTA2MTE5ODI5MmIzMzdmN2RjZTgyNzg3IiwiaWQiOiIwMGQ5Nzk3NTVlNjY2NzExIiwic2VjcmV0IjoiW1wiUDJQS1wiLHtcIm5vbmNlXCI6XCIxMGVlODczYjcyYTBiZGY5YzhmODIxMzZkY2UwNDBlYzgwMmM2NzAxYTMzMzcyYjExYTUzZDZmMzJiOTllOWRiXCIsXCJkYXRhXCI6XCIwMjNjZWE0ODA2YjFlMWE5ODI5ZDMwZDVjYjhhNzgwMTFkNDI3MWM2NDc0ZWIzMTUzMWVjOTFmMjgxMTBmZTNmNDBcIixcInRhZ3NcIjpbXX1dIn1dfV0sInVuaXQiOiJzYXQifQ",
+    "tags": [
+     [
+      "p",
+      "3cea4806b1e1a9829d30d5cb8a78011d4271c6474eb31531ec91f28110fe3f40"
+     ],
+     [
+      "amount",
+      "1"
+     ],
+     [
+      "mint",
+      "https://mint.unclerics.cash"
+     ],
+     [
+      "u",
+      "https://mint.unclerics.cash"
+     ]
+    ],
+    "sig": "0c86a011a44739bdba9a9f0ff9860eb9343b3088e88566cc7de4bf75775f9e87cd9881c2c59c21e5899aebbbfb3d600ac7ef0d0bddeadc611fe381305680a8ac"
+   }
+  },
+  {
+   "family": "content-token-cashuB-denos",
+   "wire": "DENOS (Freakoverse): a cashuB token in content",
+   "served_before_fix": 1,
+   "expected": {
+    "amount_sats": 0,
+    "value_source": "none",
+    "no_value_reason": "content-token",
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "d3f14f2863aa8949f8c24d9f59e0006599408edff344ace0a848dab4357f286e",
+    "pubkey": "3cea4806b1e1a9829d30d5cb8a78011d4271c6474eb31531ec91f28110fe3f40",
+    "kind": 9321,
+    "created_at": 1771458141,
+    "content": "cashuBo2FteBxodHRwczovL21pbnQuY3ViYWJpdGNvaW4ub3JnYXVjc2F0YXSBomFpSAC58En8vOXiYXCBo2FhAWFzeKtbIlAyUEsiLHsibm9uY2UiOiIyMWRkM2ExNzg2NzM3ZmNmZTIxZjc4N2I3MmRiYmE5MTA4NTE3YmRiYmVjYjJhZDU0ZTdjNDdkZGQ5ODJhY2YxIiwiZGF0YSI6IjAyYTZiYTY5M2U4YWNkZTQwMTQyYWU3MTgwZDgwOGIwODc5MzBjYTFmMGU4MjgzOTdmYTQwZGUzNWQ4M2VjODJjZCIsInRhZ3MiOltdfV1hY1ghAz7sRTN_lLFco52OSEQT5bFVIDcvG9iLrc2oJkmtb23t",
+    "tags": [
+     [
+      "p",
+      "a6ba693e8acde40142ae7180d808b087930ca1f0e828397fa40de35d83ec82cd"
+     ],
+     [
+      "amount",
+      "1"
+     ],
+     [
+      "u",
+      "https://mint.cubabitcoin.org"
+     ]
+    ],
+    "sig": "581c7e431e3bdd534592ab0c6e0bdbee39fc9666718e83e07092a3285a4241a31da91503deb60828ccd8c1f56c14921dbbd770a5a50246e646ea32e932b56395"
+   }
+  },
+  {
+   "family": "zero-ecash",
+   "wire": "NDK failed-mint bug via Olas: no ecash, amount '0'",
+   "served_before_fix": 0,
+   "expected": {
+    "amount_sats": 0,
+    "value_source": "none",
+    "no_value_reason": "zero-ecash",
+    "loaded": true,
+    "mint_class": "unreviewed"
+   },
+   "event": {
+    "id": "e3aaeb64a582516d83143199e98f035d5e76e31c027466619b8126bdc4bb0b0a",
+    "pubkey": "619297f6c93475d89ca8122b9e75cc6383486941aecbcd3eed2f7ea984a9ec0e",
+    "kind": 9321,
+    "created_at": 1737744726,
+    "content": "\ud83d\ude0d\ud83d\ude0d\ud83d\ude0d\ud83d\ude0d",
+    "tags": [
+     [
+      "alt",
+      "This is a nutzap"
+     ],
+     [
+      "amount",
+      "0"
+     ],
+     [
+      "u",
+      "https://mint.minibits.cash/Bitcoin"
+     ],
+     [
+      "e",
+      "eba0593d36e134a1f1127b286cd5947593b3e164e6ce0fe233b4747f015868e8",
+      "",
+      "",
+      "fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52"
+     ],
+     [
+      "unit",
+      "msat"
+     ],
+     [
+      "p",
+      "fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52"
+     ],
+     [
+      "client",
+      "olas",
+      "31990:fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52:1731850618505"
+     ]
+    ],
+    "sig": "1df1299464eb17e86cef3bc1cf3b48b00a0a0bd7a3c7a3e2fa78358d6b9d0eaa1414bebdd57071809e1bc97949ffb475202045c752b443825a9a419549569525"
+   }
+  },
+  {
+   "family": "not-a-nutzap-no-mint",
+   "wire": "the kind number reused by a non-nutzap: no u tag, dropped at load",
+   "served_before_fix": null,
+   "expected": {
+    "amount_sats": 0,
+    "value_source": "none",
+    "no_value_reason": "no-proof",
+    "loaded": false,
+    "mint_class": null
+   },
+   "event": {
+    "id": "f34dbf34a6f7e4117a76443bf406365329f488e99f4a97d28208d1199b1baf88",
+    "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+    "kind": 9321,
+    "created_at": 1722594346,
+    "content": "",
+    "tags": [
+     [
+      "e",
+      "6979b2d7e7742873962940173bc567f754cd4ceccd96e68643f96c0d406a12f0"
+     ]
+    ],
+    "sig": "3d12214b3330c745633bc5c6c0c5799fe99741341507930609a6939a266ccbecd127549aed0d949136cbd41cc99a64619d02462df428f15a62ab9a9563b3c78c"
+   }
+  },
+  {
+   "family": "test-harness-loopback",
+   "wire": "July 2026 test harness: 162 fresh sender keys on http://127.0.0.1:3338 (Nutshell's default port), 14-day locktime refunding the sender",
+   "served_before_fix": 10,
+   "expected": {
+    "amount_sats": 10,
+    "value_source": "proof_tags",
+    "no_value_reason": null,
+    "loaded": true,
+    "mint_class": "private-host"
+   },
+   "event": {
+    "id": "8d10d217e65dcf971115d8096107f121d5c91a4de4460f0912410388f23f9846",
+    "pubkey": "43f4e0de5385325d529ffc7a53fcb881af227c837ac25f76709332039dccba61",
+    "kind": 9321,
+    "created_at": 1781278918,
+    "content": "tip for good taste",
+    "tags": [
+     [
+      "alt",
+      "This is a nutzap"
+     ],
+     [
+      "proof",
+      "{\"amount\":2,\"C\":\"020b47b5387d32caa7a303b0809d268a61740383b8cf711fb1d8e23182d03ec812\",\"id\":\"00cd6db543308081\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"f6620400111b091b7c3dca0161210db64c88bd44461fb74b3f0688165fb65b99\\\",\\\"data\\\":\\\"02c9d5f5ca804c17ea9213b3531441a3d0e13a013bfbd5a9395f1f3c8b254b0282\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"f0c971fc590b1b38eb9a1efaf71371b1788147550190de829f0069bb1bb4ab71\",\"e\":\"a455228113cc591bc4e6d8ec20945ec046273505e61ba2f94d2df238c13b48fa\",\"r\":\"a3e6e8365d4156afcd20bc10217d2e69859d6b685ebb3664b7b2d6afc7710c12\"}}"
+     ],
+     [
+      "proof",
+      "{\"amount\":8,\"C\":\"02a1bf847364ddd3d036c2bbce8f47cba60f6f81ac410bdaed9909d6d03ab4f48b\",\"id\":\"00cd6db543308081\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"99c98274e8bd228db8932344c5ae049277fc98b16495e29f7ad0fd59ec93d23c\\\",\\\"data\\\":\\\"02c9d5f5ca804c17ea9213b3531441a3d0e13a013bfbd5a9395f1f3c8b254b0282\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"21c5010334ba6fe9f4334ce61e274d28ff1cc83ed83c138444ad0025e1b3becd\",\"e\":\"88d3e4197faf6036a73aeef2a72d387a1127596d89e6cc318659582454e5103a\",\"r\":\"4af031854603b90ca91edeb46e8e45a1c95ef1b2243c685ae6cf53b13f04a1a6\"}}"
+     ],
+     [
+      "u",
+      "http://127.0.0.1:3338"
+     ],
+     [
+      "unit",
+      "sat"
+     ],
+     [
+      "e",
+      "8288e157106cd174b019d72a2e06f57ed8ff070c1e4ab36fcbd3c2c39ee033bd",
+      "wss://nos.lol/",
+      "",
+      "c9d5f5ca804c17ea9213b3531441a3d0e13a013bfbd5a9395f1f3c8b254b0282"
+     ],
+     [
+      "p",
+      "c9d5f5ca804c17ea9213b3531441a3d0e13a013bfbd5a9395f1f3c8b254b0282"
+     ],
+     [
+      "amount",
+      "10"
+     ]
+    ],
+    "sig": "a16bb8f1cda59aa6345c6b40d0a00dd0c0474c31bae88de64b1710bc2ef522fd509c8cac91e095db7b4cfd02056c9dc6c900c7c325eaffe0ffa660cc9a8bc103"
+   }
+  },
+  {
+   "family": "docker-bridge-mint",
+   "wire": "2026-07-30: six fresh keys paying one recipient within an hour on throwaway Docker mints (127.0.0.1:32787-32791, 172.17.0.1:32769)",
+   "served_before_fix": 21,
+   "expected": {
+    "amount_sats": 21,
+    "value_source": "proof_tags",
+    "no_value_reason": null,
+    "loaded": true,
+    "mint_class": "private-host"
+   },
+   "event": {
+    "id": "22b0d737ed083cb3fd86e8635b94e2ff54d6506378d5aeac28137cd13c0ace3e",
+    "pubkey": "febc2fcc69a4582cabcff524a1c747e8ebafb536c15fe161a2b14bed7ded2572",
+    "kind": 9321,
+    "created_at": 1785420715,
+    "content": "",
+    "tags": [
+     [
+      "proof",
+      "{\"amount\":16,\"C\":\"02c8d31b7463e0eabc4aa0a6a74a48d3ca5d1bce5483f27510c7c2d5e076355eac\",\"id\":\"00c86134f47f8753\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"23d5665fdf9f788933b5fc7147cf41a764b0a9c67a1ca8938c579796b0638ccc\\\",\\\"data\\\":\\\"0257191131ad19a3e8deadf11d9f78a64b4217ee0542a511af5e72cf7b9e06b7a9\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"6cf2ed58234e011bbdb8d53e6309a870fdcb09db7b4d5ac3bc3494724900bbb2\",\"e\":\"933eef528663d70604c416cea533e4662010f5beb0aca7a68d0fc337d6fe7fca\",\"r\":\"6cf2975eea099de0bd709863bb1e6c268080c04d6828508962ae9b25f9d55519\"}}"
+     ],
+     [
+      "proof",
+      "{\"amount\":4,\"C\":\"03d535144eb0fd9fd4095f2085e1d09fd3d462094a0268348f8083b0159d90c48f\",\"id\":\"00c86134f47f8753\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"b1782f5a4056fee9634f5afadf561c5b2eab1298c3cba177f3ef71f077322286\\\",\\\"data\\\":\\\"0257191131ad19a3e8deadf11d9f78a64b4217ee0542a511af5e72cf7b9e06b7a9\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"f171d7e97771c3ba1180c8235dd3bd667684bb62cf5f6b6962a9df427f2e7d20\",\"e\":\"a8c3ed2c535318c2f6c34e8452516d524651c652bec0e29fd86c13d9ede02ae2\",\"r\":\"6505d9d78096f73ccf5c49aca947c2d575f13f1523414bfb2ee466d4603963db\"}}"
+     ],
+     [
+      "proof",
+      "{\"amount\":1,\"C\":\"03162e95fd3f292b6914506f6c342654a4ae4dcf485416419d3ca1ff18b6b68d56\",\"id\":\"00c86134f47f8753\",\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"dd238895fefc99f34552117f3606e853641b908e166b18da68ab3b678c89f7e5\\\",\\\"data\\\":\\\"0257191131ad19a3e8deadf11d9f78a64b4217ee0542a511af5e72cf7b9e06b7a9\\\",\\\"tags\\\":[]}]\",\"dleq\":{\"s\":\"3717c36438a80897894af3ae83aa099a9852ec440028060bc3624cca010a0401\",\"e\":\"65112963fd52f4978f22c998edf9f946d808bdaccef98e29536dd709ff3f4e4a\",\"r\":\"2fce983037e7f8cc8cd15241de8e60debe8e233cadfc7700837c2971ad630c62\"}}"
+     ],
+     [
+      "u",
+      "http://172.17.0.1:32769"
+     ],
+     [
+      "unit",
+      "sat"
+     ],
+     [
+      "e",
+      "113d1032fd7fc8678a6d9464415287bdbfc789112b3567877819207dd13cdcd0"
+     ],
+     [
+      "a",
+      "30009:580760b4f3b9b5e394cf3597f130e67e38d8e2acc26647dc57bba5583ba5527e:event-qa-cashu-ms7ldu8p-entrance"
+     ],
+     [
+      "p",
+      "580760b4f3b9b5e394cf3597f130e67e38d8e2acc26647dc57bba5583ba5527e"
+     ]
+    ],
+    "sig": "1ef49f128f6e6c42bb6507d33eeef9d048504f8969426b503405f593db88e8e44637d7d2365b15208b3b46c548ad39a57c616c784671efc05d884b564c5ef690"
+   }
+  },
+  {
+   "family": "testnut-payment",
+   "wire": "A proof-tag payment on testnut.cashu.space, whose FakeWallet marks every invoice paid",
+   "served_before_fix": 32,
+   "expected": {
+    "amount_sats": 32,
+    "value_source": "proof_tags",
+    "no_value_reason": null,
+    "loaded": true,
+    "mint_class": "fake-backend"
+   },
+   "event": {
+    "id": "7e9295686a5c8dfe4170a8b486fa46fc369d41c08c23d3efb12fad33242d8e02",
+    "pubkey": "472ff17f3fe49322796fbb69fdda83303f329c086452b5d7a33a3ea0fb384cfd",
+    "kind": 9321,
+    "created_at": 1780782687,
+    "content": "test nutzap from Alice \ud83e\udd19",
+    "tags": [
+     [
+      "proof",
+      "{\"amount\":32,\"id\":\"01884a74bb2fc5ee6e5f958f89f9e4e6cf79241fbc9fd1012d6811b054a78beffe\",\"secret\":\"{\\\"data\\\":\\\"0336e2ee6213b011187d0ff32b3d486d8c0ce721164247944b3dc287ae4866e784\\\",\\\"kind\\\":\\\"P2PK\\\",\\\"tags\\\":[[\\\"sigflag\\\",\\\"SIG_INPUTS\\\"]]}\",\"C\":\"02255fbaac12be1b21ca122199200ebc9b16782f530ae920ac01664ab575cd4def\",\"dleq\":{\"e\":\"1a5c5b9aa5607746a6cf08bb165ac9c2fb45a25de2866c6357e1aae833bb2829\",\"s\":\"23d9e182c8a8f68856cae764a856896acd79713feacc0ca2e31173a082b506e2\",\"r\":\"3bf0f121b9887bec813585514fe0b7926ef304d018d55f8df741f13c9298cfb5\"}}"
+     ],
+     [
+      "u",
+      "https://testnut.cashu.space"
+     ],
+     [
+      "p",
+      "a37dc26e008a9c90c4f083ef2d332eac07dc5f8d740deda66d2d2d5da2c6200d"
+     ]
+    ],
+    "sig": "0754200253ba4131fdaa6cf298f31fc82b136c0bf45773072362c32a63078afd020e70405ec2b81bd4a7e62f188f6ca8b0906e85b8a543210145165e5364e876"
+   }
+  },
+  {
+   "family": "gone-test-mint",
+   "wire": "A proof-tag payment on testmint.macadamia.cash, Macadamia's hidden test mint, gone by 2026-09-18",
+   "served_before_fix": 1,
+   "expected": {
+    "amount_sats": 1,
+    "value_source": "proof_tags",
+    "no_value_reason": null,
+    "loaded": true,
+    "mint_class": "test-mint-gone"
+   },
+   "event": {
+    "id": "69f0fcd1838fc61a0961dbed3b783c88a58f210b832a6e9a1ac9b821b525161f",
+    "pubkey": "e875781cc0a941aa3130becabbd6dc20c195e6aa1fa2d26ce87ac13ba8e1d102",
+    "kind": 9321,
+    "created_at": 1771753956,
+    "content": "",
+    "tags": [
+     [
+      "proof",
+      "{\"id\":\"00ea0d416644128c\",\"amount\":1,\"secret\":\"[\\\"P2PK\\\",{\\\"nonce\\\":\\\"ZK55+Ku2p+dlGZm4L0jsNyOwdSBROUqRRkdCx3QKS8A=\\\",\\\"data\\\":\\\"024f36315d0bcadd96f71a04b327b210b245bb25315ff4433805ac51e870d1452e\\\",\\\"tags\\\":[[\\\"sigflag\\\",\\\"SIG_INPUTS\\\"]]}]\",\"C\":\"022628a7bd8199658091cdde96d710d897ba291f4298437e3564ca249a87a0ee0f\",\"dleq\":{\"e\":\"4be5d9bbea7d9582faf7cfbf52feea3fb9b1d8a813516e499b3f3f952b79743c\",\"s\":\"ddb736125e4661293178747adf05b1725186c14fbdaf225075e68bb0d974c186\"}}"
+     ],
+     [
+      "unit",
+      "sat"
+     ],
+     [
+      "u",
+      "https://testmint.macadamia.cash"
+     ],
+     [
+      "p",
+      "e875781cc0a941aa3130becabbd6dc20c195e6aa1fa2d26ce87ac13ba8e1d102"
+     ]
+    ],
+    "sig": "0dfeae44d7de2dcda585fd6a0a9bccfea3ebcbe96d29939674842fe52b8807fdca2670e24bc7ba6e287e5b3cad24a195ea461546f0a18f5e05790a83f5e86e19"
+   }
+  }
+ ]
+}

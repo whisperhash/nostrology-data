@@ -1,0 +1,53 @@
+# Dagster instance config (DAGSTER_HOME=/dagster_home; this file mounted there read-only).
+# Shared by all four Dagster services (code-grpc, daemon, both webservers). See
+# docs/design/dagster-orchestration-design.md.
+
+# Run / event-log / schedule storage = the on-box dagster-postgres container (NOT Aurora:
+# chosen when Aurora still scaled to zero, which the daemon's constant polling would have
+# defeated). Only the PASSWORD comes
+# from the env (the secret); host/db/user/port are fixed compose-internal values.
+storage:
+  postgres:
+    postgres_db:
+      username: dagster
+      password:
+        env: DAGSTER_PG_PASSWORD
+      hostname: dagster-postgres
+      db_name: dagster
+      port: 5432
+
+# Per-step stdout/stderr -> files on the dagster volume (browsable in the UI, and readable there
+# by read-only accounts). All Dagster artifacts live on this volume.
+compute_logs:
+  module: dagster.core.storage.local_compute_log_manager
+  class: LocalComputeLogManager
+  config:
+    base_dir: /mnt/nozzl-dagster/compute_logs
+
+# Serialize runs (Stage 0 is serial; matches the flock intent at the orchestrator level).
+run_coordinator:
+  module: dagster.core.run_coordinator
+  class: QueuedRunCoordinator
+  config:
+    max_concurrent_runs: 1
+
+# Run/event history is orchestrator metadata (distinct from the indefinitely-retained service
+# logs) — cap schedule/sensor tick history at 180 days.
+retention:
+  schedule:
+    purge_after_days: 180
+  sensor:
+    purge_after_days: 180
+
+# Mark runs abandoned by a daemon restart/crash as failed (which then fires the failure sensor),
+# instead of leaving them STARTED forever - complements the out-of-band heartbeat.
+# NOTE: with the DefaultRunLauncher there is NO worker health check, so `enabled` alone reaps
+# nothing (2026-08-24: a run orphaned by a deploy mid-run sat STARTED for hours and
+# wedged the single run slot). max_runtime_seconds is the one backstop that fires: the longest
+# healthy nightly run is ~15 min (lightning), so 3 h fails only an orphan or a truly stuck run.
+run_monitoring:
+  enabled: true
+  max_runtime_seconds: 10800
+
+telemetry:
+  enabled: false

@@ -1,0 +1,8 @@
+# Test tools for the Dagster environment in the test gate, installed together with
+# requirements.txt (the image lock);
+# never installed in the image. requirements-test.txt is GENERATED from this file by
+# `scripts/python-lock.sh compile dagster-test` and constrained to the image lock, so the tests run
+# against exactly the locked packages plus pytest and what it needs.
+-c requirements.txt
+
+pytest==9.1.1

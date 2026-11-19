@@ -1,0 +1,21 @@
+# The cross-checks' venv (workstation only): everything in crosscheck/ runs under .venv-crosscheck, never
+# under a bare python3 or a scratch venv. The pins follow production (dagster_code/requirements.txt):
+# pycountry and reverse_geocoder decide country names and nearest cities, numpy and scipy drive
+# the gazetteer's nearest-neighbour search, so a version drift reads as a methodology diff.
+# reverse_geocoder is sdist-only on PyPI; its wheel is built reproducibly (scripts/python-lock.sh
+# wheel) and committed as deploy/dagster/wheels/reverse_geocoder-1.5.1-py3-none-any.whl, which this
+# lock resolves through --find-links, so the hash here is that wheel's.
+# Compile: scripts/python-lock.sh compile crosscheck
+# Build the venv from the interpreter this recipe names, BY ABSOLUTE PATH, from the repo root. Its
+# default certificate store is a maintained bundle, and that is what every script here verifies
+# against: no SSL_CERT_FILE export, no cafile argument. A bare python3 from PATH on a developer
+# machine may be a build whose default store loads no roots at all, or an OS vendor's static copy
+# that receives no security updates.
+#   /path/to/python3.14 -m venv --clear .venv-crosscheck
+#   .venv-crosscheck/bin/pip install --require-hashes --only-binary :all: \
+#     --find-links deploy/dagster/wheels -r crosscheck/requirements.txt
+duckdb==1.5.3
+pycountry==26.2.16
+reverse_geocoder==1.5.1
+numpy==2.4.6
+scipy==1.17.1

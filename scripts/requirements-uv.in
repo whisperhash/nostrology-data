@@ -1,0 +1,11 @@
+# uv, the lock generator that scripts/python-lock.sh drives (workstation only; never in an image).
+# requirements-uv.txt is GENERATED from this file by `scripts/python-lock.sh compile uv`.
+# Bootstrap (once, from the repo root), on a python3.14 whose venvs seed pip 26.2.2 or later, whose
+# vendored certifi no longer carries the emSign roots compromised in 2025. An older pip, such as the
+# 21.2.4 an OS vendor's python3 may seed, still trusts them - never bootstrap from one.
+#   /path/to/python3.14 -m venv .venv-uv
+#   .venv-uv/bin/pip install --require-hashes --only-binary :all: -r scripts/requirements-uv.txt
+# python-lock.sh refuses to run under any uv version other than the one pinned here.
+# Floor 0.13.5 (2026-10-24): 0.13.4 dropped emSign ECC Root CA - G3 from uv's compiled-in roots,
+# 0.13.5 added the rustls-webpki key blocklist for the compromised intermediates.
+uv==0.13.5

@@ -1,0 +1,10 @@
+# What is left of the retired nostrology-pipeline image: the test gate's SQL tests run on the
+# duckdb here (.github/workflows/gate.yml installs that one stanza of the lock). DIRECT
+# dependencies, hand-edited, exact pins only. requirements-pipeline.txt is GENERATED from this
+# file by `scripts/python-lock.sh compile pipeline`.
+# None of the three has dependencies of its own.
+#
+# psycopg2 and pyyaml were the image's, for its loader; nothing installs them from this lock now.
+duckdb==1.5.3
+psycopg2-binary==2.9.12
+pyyaml==6.0.2

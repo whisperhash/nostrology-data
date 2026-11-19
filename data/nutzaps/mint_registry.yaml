@@ -1,0 +1,164 @@
+# Reviewed Cashu mints for /nutzaps and the paid `nutzaps.active_users` metric
+# (nostrology-data#9). Parsed by loader/nutzap_mints.py; materialised into
+# nutzap_mint_classes on every nutzaps_refresh (loader --classify-nutzap-mints).
+#
+# Classes. "Excluded" = out of value, payments, senders (MAU), the /nutzaps/mints
+# leaderboard, "Configured By" and the per-mint pages.
+#   fake-backend       excluded  the mint's operator says its Lightning backend is fake:
+#                                 invoices are marked paid without payment, so its
+#                                 ecash is unbacked.
+#   test-mint-gone     excluded  published as a test mint and no longer answers.
+#   test-wording-live  counted   calls itself test/demo, but settles real Lightning.
+#                                 Wording alone is not grounds for exclusion
+#                                 (8333.space:3338 is the example).
+#   unreachable        counted   does not answer today; its past payments were real.
+# Not written here:
+#   private-host       excluded  automatic: loopback, RFC 1918, link-local, CGNAT,
+#                                 .local/.internal/..., single-label hosts. See
+#                                 nutzap_mints.private_host_reason.
+#   unreviewed         counted   every mint not listed; never presumed fake.
+#
+# Each entry names exactly ONE of:
+#   url:  one mint, written exactly as the loader stores it (normalized: lowercase
+#         scheme and host, no default port, no trailing slash, path case kept);
+#   host: every URL on that host, any scheme, port or path.
+# plus class, evidence (a URL or a quote), as_of (the date the evidence was checked)
+# and reviewer. The loader refuses a malformed file, so a typo fails the refresh
+# instead of silently counting a test mint.
+#
+# Public-seed keysets are per keyset, not per mint, and
+# are deliberately NOT here yet: that needs per-proof keyset ids in the table.
+
+mints:
+
+# -- fake-backend: the Cashu project's own testnut family ---------------------------
+- host: testnut.cashu.space
+  class: fake-backend
+  evidence: >-
+    Its NUT-06 info, 2026-09-18: "It uses a FakeWallet, all your Lightning invoices
+    will always be marked paid so that you can test minting and melting ecash via
+    Lightning." docs.cashu.space FAQ: "a testnut mint with fees with unbacked fake
+    ecash for testing"
+    https://github.com/cashubtc/docs.cashu.space/blob/358e62d581ab34b50f0bcad505097273e69610fd/src/pages/faq.mdx#L68-L72
+  as_of: 2026-09-18
+  reviewer: agent
+- host: nofee.testnut.cashu.space
+  class: fake-backend
+  evidence: >-
+    awesome-cashu: "a testnut mint with no fees with unbacked fake ecash for testing"
+    https://github.com/cashubtc/awesome-cashu/blob/82c892bae3df544c3b0bf86fb57e6a77fef21f0b/README.md#L164-L166
+    Its NUT-06 info, 2026-09-18: "Testnut feeless mint ... use testnut.cashu.space for testing."
+  as_of: 2026-09-18
+  reviewer: agent
+- host: nofees.testnut.cashu.space
+  class: fake-backend
+  evidence: >-
+    docs.cashu.space FAQ: "a testnut mint with no fees with unbacked fake ecash for
+    testing" (the FAQ spells it nofees., awesome-cashu nofee.; both circulate)
+    https://github.com/cashubtc/docs.cashu.space/blob/358e62d581ab34b50f0bcad505097273e69610fd/src/pages/faq.mdx#L68-L72
+  as_of: 2026-09-18
+  reviewer: agent
+
+# -- fake-backend: other published fake mints (none in the archive yet) --------------
+- host: testnut.cashudevkit.org
+  class: fake-backend
+  evidence: >-
+    CDK's own example calls it a "test mint that auto-pays"
+    https://github.com/cashubtc/cdk/blob/7e4285ce6b3fc85a8eb7f04288babe43c8b05eee/crates/cdk/examples/npubcash.rs#L10-L29
+  as_of: 2026-09-17
+  reviewer: agent
+- host: testnut.cashu.exchange
+  class: fake-backend
+  evidence: >-
+    "Nutshell-CF/0.0.1, FakeWallet backend"
+    https://github.com/Amperstrand/cashu-audit/blob/40cf5ed6653686adc6cd5948cd33d7915064054d/conformance/mints.yaml#L1-L9
+  as_of: 2026-09-17
+  reviewer: agent
+- host: fake.thesimplekid.dev
+  class: fake-backend
+  evidence: >-
+    Listed under "Test Mints"
+    https://github.com/optout21/parakesh/blob/eb601972e367c971c2d83d93afc9d094e2ff7f98/README.md#L52-L56
+    ; run by the CDK maintainer; the host name says fake.
+  as_of: 2026-09-17
+  reviewer: agent
+- host: success.fake.macadamia.cash
+  class: fake-backend
+  evidence: &macadamia_fake >-
+    "FakeWallet mints (simulated Lightning, deterministic timing)"
+    https://github.com/zeugmaster/CashuSwift/blob/dd51e546cf1e593edb6a0c8ebbe022abac123fb9/Tests/cashu-swiftTests/Support/TestEndpoints.swift#L11-L28
+  as_of: 2026-09-17
+  reviewer: agent
+- host: success-long.fake.macadamia.cash
+  class: fake-backend
+  evidence: *macadamia_fake
+  as_of: 2026-09-17
+  reviewer: agent
+- host: error-short.fake.macadamia.cash
+  class: fake-backend
+  evidence: *macadamia_fake
+  as_of: 2026-09-17
+  reviewer: agent
+- host: error-long.fake.macadamia.cash
+  class: fake-backend
+  evidence: *macadamia_fake
+  as_of: 2026-09-17
+  reviewer: agent
+- host: exception.fake.macadamia.cash
+  class: fake-backend
+  evidence: *macadamia_fake
+  as_of: 2026-09-17
+  reviewer: agent
+
+# -- test-mint-gone ------------------------------------------------------------------
+- host: testmint.macadamia.cash
+  class: test-mint-gone
+  evidence: >-
+    Macadamia wallet's hidden "add test mints" gesture adds it
+    https://github.com/zeugmaster/macadamia/blob/8a1db917322d4fb48d96d36af84189ff5ef0a12e/macadamia/Mints/MintManagerView.swift#L121-L124
+    ; no DNS record on 2026-09-18.
+  as_of: 2026-09-18
+  reviewer: agent
+
+# -- test-wording-live: counted ------------------------------------------------------
+- host: mint.routstr.com
+  class: test-wording-live
+  evidence: 'Its NUT-06 info, 2026-09-18: "Routstr testing mint"'
+  as_of: 2026-09-18
+  reviewer: agent
+- host: mint.lnpay.cz
+  class: test-wording-live
+  evidence: 'Its NUT-06 info, 2026-09-18: "This mint is for demonstration purposes only"'
+  as_of: 2026-09-18
+  reviewer: agent
+- host: mint.unclerics.cash
+  class: test-wording-live
+  evidence: >-
+    "TESTING MINT - Do not store large amounts!" (ye0man/cashu-mint-directory probe,
+    2026-09-17)
+  as_of: 2026-09-17
+  reviewer: agent
+- url: https://8333.space:3338
+  class: test-wording-live
+  evidence: >-
+    Its NUT-06 info, 2026-09-18: "Cashu test mint ... for testing and development
+    purposes only", yet it settles real Lightning payments in the auditor.
+  as_of: 2026-09-18
+  reviewer: agent
+
+# -- unreachable: counted ------------------------------------------------------------
+- host: mint.bitcointxoko.com
+  class: unreachable
+  evidence: No DNS record on 2026-09-18. Holds 30,505 sats of archived nutzaps.
+  as_of: 2026-09-18
+  reviewer: agent
+- host: mint.0xchat.com
+  class: unreachable
+  evidence: No DNS record on 2026-09-18.
+  as_of: 2026-09-18
+  reviewer: agent
+- host: stablenut.umint.cash
+  class: unreachable
+  evidence: No DNS record on 2026-09-18.
+  as_of: 2026-09-18
+  reviewer: agent

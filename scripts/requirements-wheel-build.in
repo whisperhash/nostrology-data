@@ -1,0 +1,12 @@
+# Build tools for `scripts/python-lock.sh wheel`, which rebuilds
+# deploy/dagster/wheels/reverse_geocoder-1.5.1-py3-none-any.whl from its sdist (workstation only;
+# never in an image). requirements-wheel-build.txt is GENERATED from this file by
+# `scripts/python-lock.sh compile wheel-build`, and `wheel` builds with --require-hashes
+# against it, so the build tools are hash-checked too.
+#
+# setuptools builds the sdist (it has no pyproject.toml, so the legacy setuptools backend);
+# numpy only satisfies the sdist's setup_requires. A different setuptools can produce
+# different wheel bytes: after changing a pin here, run `wheel` (it fails on a mismatch),
+# replace the committed wheel deliberately, and recompile the dagster lock.
+setuptools==84.0.0
+numpy==2.4.6
